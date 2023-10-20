@@ -15,13 +15,8 @@ import java.util.Locale;
 
 @Configuration
 public class PayMyBuddyConfiguration {
-    @Autowired
-    private MyUserDetailsService userDetailsService;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
+
 
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
