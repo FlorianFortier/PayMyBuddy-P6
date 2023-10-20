@@ -1,6 +1,7 @@
 package com.payMyBuddy.app.service;
 
 import com.payMyBuddy.app.dto.UserDto;
+import com.payMyBuddy.app.exeption.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.repository.UserRepository;
 import com.payMyBuddy.app.util.IUserService;
@@ -29,7 +30,7 @@ public class UserService implements IUserService {
         user.setEmail(userDto.getEmail());
         user.setRoles(Arrays.asList("ROLE_USER"));
 
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     private boolean emailExists(String email) {
