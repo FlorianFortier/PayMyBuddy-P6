@@ -27,6 +27,10 @@ public class User implements Serializable, UserDetails {
     @Column(name= "surname")
 
     private String surname;
+
+    @Column
+    private String username;
+
     @Column(name= "email")
 
     private String email;
@@ -35,6 +39,7 @@ public class User implements Serializable, UserDetails {
     private String password;
     @Column(name = "createdAt")
     private String createdAt;
+
 
     public User(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, List<GrantedAuthority> authorities) {
     }
@@ -50,7 +55,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.username;
     }
 
     @Override

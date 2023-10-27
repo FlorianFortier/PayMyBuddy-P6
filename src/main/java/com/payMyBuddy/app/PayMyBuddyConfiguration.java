@@ -31,12 +31,4 @@ public class PayMyBuddyConfiguration {
         return cookieLocaleResolver;
     }
 
-    @Configuration
-    @ImportResource({ "classpath:webSecurityConfig.xml" })
-    public class SecSecurityConfig {
-        public SecSecurityConfig() {
-            super();
-        }
-    }
-
 }
