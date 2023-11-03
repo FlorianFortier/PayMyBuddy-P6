@@ -21,12 +21,12 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name= "user_id")
     private Long id;
-    @Column(name= "name")
+    @Column(name= "first_name")
 
-    private String name;
-    @Column(name= "surname")
+    private String firstName;
+    @Column(name= "last_name")
 
-    private String surname;
+    private String lastName;
 
     @Column
     private String username;
@@ -37,7 +37,7 @@ public class User implements Serializable, UserDetails {
     @Column(name= "pwd")
 
     private String password;
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
     private String createdAt;
 
 
@@ -60,22 +60,22 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public void setRoles(List<String> roleUser) {

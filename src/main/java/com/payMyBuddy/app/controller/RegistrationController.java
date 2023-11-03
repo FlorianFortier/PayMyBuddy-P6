@@ -1,10 +1,11 @@
 package com.payMyBuddy.app.controller;
 
 import com.payMyBuddy.app.dto.UserDto;
-import com.payMyBuddy.app.exeption.UserAlreadyExistException;
+import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
-import com.payMyBuddy.app.service.UserService;
+import com.payMyBuddy.app.service.MyUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,30 +16,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
+@Controller
 public class RegistrationController {
 
-    private UserService userService;
+    private final MyUserDetailsService userService;
 
-    /**
-     *
-     * @param request
-     * @param model
-     * @return
-     */
+    public RegistrationController(MyUserDetailsService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/registration")
     public String showRegistrationForm(WebRequest request, Model model) {
         UserDto userDto = new UserDto();
         model.addAttribute("user", userDto);
-        return "registration";
+        return "registration"; // Assurez-vous d'avoir une vue nommée "registration"
     }
 
-    /**
-     *
-     * @param userDto
-     * @param request
-     * @param errors
-     * @return
-     */
     @PostMapping("/user/registration")
     public ModelAndView registerUserAccount(
             @ModelAttribute("user") @Valid UserDto userDto,
@@ -49,7 +42,7 @@ public class RegistrationController {
 
         if (bindingResult.hasErrors()) {
             // Si des erreurs de validation sont présentes, renvoyer l'utilisateur au formulaire d'inscription
-            mav.setViewName("registrationForm"); // Assurez-vous d'avoir une vue nommée "registrationForm"
+            mav.setViewName("registration"); // Assurez-vous d'avoir une vue nommée "registration"
             return mav;
         }
         try {
@@ -57,9 +50,9 @@ public class RegistrationController {
             mav.setViewName("successRegister"); // Assurez-vous d'avoir une vue nommée "successRegister"
             mav.addObject("user", userDto);
         } catch (UserAlreadyExistException uaeEx) {
-            mav.setViewName("registrationForm"); // Renvoyer l'utilisateur au formulaire d'inscription en cas d'erreur
+            mav.setViewName("registration"); // Renvoyer l'utilisateur au formulaire d'inscription en cas d'erreur
             mav.addObject("message", "An account for that username/email already exists.");
         }
-        return mav;
+        return new ModelAndView("successRegister", "user", userDto);
     }
 }

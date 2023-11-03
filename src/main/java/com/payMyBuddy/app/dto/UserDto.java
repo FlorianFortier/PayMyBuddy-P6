@@ -2,11 +2,15 @@ package com.payMyBuddy.app.dto;
 
 import com.payMyBuddy.app.security.PasswordMatches;
 import com.payMyBuddy.app.security.ValidEmail;
+import lombok.Getter;
+import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.validation.constraints.NotEmpty;
 
 @PasswordMatches
+@Getter
+@Setter
 public class UserDto {
 
    @NotNull
@@ -16,7 +20,7 @@ public class UserDto {
     @NotNull
     @NotEmpty
 
-    private String surname;
+    private String lastName;
 
     @NotNull
     @NotEmpty
@@ -41,22 +45,6 @@ public class UserDto {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -67,10 +55,6 @@ public class UserDto {
 
     public void setMatchingPwd(String matchingPwd) {
         this.matchingPwd = matchingPwd;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
