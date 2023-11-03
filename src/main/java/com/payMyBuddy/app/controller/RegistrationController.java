@@ -32,7 +32,7 @@ public class RegistrationController {
         return "registration"; // Assurez-vous d'avoir une vue nommée "registration"
     }
 
-    @PostMapping("/user/registration")
+    @PostMapping("/registration")
     public ModelAndView registerUserAccount(
             @ModelAttribute("user") @Valid UserDto userDto,
             BindingResult bindingResult,

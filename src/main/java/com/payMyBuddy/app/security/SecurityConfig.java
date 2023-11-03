@@ -23,10 +23,6 @@ public class SecurityConfig {
     private final MyUserDetailsService myUserDetailsService;
 
 
-    @Autowired
-    public PasswordEncoder passwordEncoder;
-
-
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(myUserDetailsService);
@@ -42,29 +38,29 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests((requests) -> requests
-//                        .requestMatchers("/", "/newUser").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin((form) -> form
-//                        .loginPage("/login")
-//                        .permitAll()
-//                )
-//                .logout(LogoutConfigurer::permitAll);
-//
-//        return http.build();
-//    }
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/", "/registration").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .formLogin((form) -> form
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .logout((logout) -> logout.permitAll());
+
+        return http.build();
+    }
 
 
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(myUserDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        //authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
