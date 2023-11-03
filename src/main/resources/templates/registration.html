@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{label.form.title}">Form</title>
 </head>
 <body>
 <h1 th:text="#{label.form.title}">Form</h1>
-<form action="/static" th:object="${user}" method="POST" enctype="multipart/form-data">
+<form action="/registration" th:object="${user}" method="POST" enctype="multipart/form-data">
     <div>
         <label th:text="#{label.user.firstName}">First Name</label>
-        <input th:field="*{'firstName'}" type="text"/>
+        <input th:field="*{firstName}" type="text"/>
         <p th:each="error : ${#fields.errors('firstName')}" th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="#{label.user.lastName}">Last Name</label>
-        <input th:field="*{'lastName'}" type="text"/>
+        <input th:field="*{lastName}" type="text"/>
         <p th:each="error : ${#fields.errors('lastName')}" th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="#{label.user.email}">Email</label>
-        <input th:field="*{'email'}" type="email"/>
+        <input th:field="*{lastName}" type="email"/>
         <p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="#{label.user.password}">Password</label>
-        <input th:field="*{'password'}" type="password"/>
+        <input th:field="*{password}" type="password"/>
         <p th:each="error : ${#fields.errors('password')}" th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="#{label.user.confirmPass}">Confirm Password</label>
-        <input th:field="*{'matchingPassword'}" type="password"/>
+        <input th:field="*{matchingPwd}" type="password"/>
     </div>
     <button type="submit" th:text="#{label.form.submit}">Submit</button>
 </form>

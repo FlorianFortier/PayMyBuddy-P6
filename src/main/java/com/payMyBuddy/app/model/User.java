@@ -28,7 +28,7 @@ public class User implements Serializable, UserDetails {
 
     private String lastName;
 
-    @Column
+    @Column(name = "username")
     private String username;
 
     @Column(name= "email")
@@ -51,11 +51,6 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
     }
 
     @Override

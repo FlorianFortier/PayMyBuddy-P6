@@ -47,7 +47,7 @@ public class RegistrationController {
         }
         try {
             User registered = userService.registerNewUserAccount(userDto);
-            mav.setViewName("successRegister"); // Assurez-vous d'avoir une vue nommée "successRegister"
+//            mav.setViewName("successRegister"); // Assurez-vous d'avoir une vue nommée "successRegister"
             mav.addObject("user", userDto);
         } catch (UserAlreadyExistException uaeEx) {
             mav.setViewName("registration"); // Renvoyer l'utilisateur au formulaire d'inscription en cas d'erreur
