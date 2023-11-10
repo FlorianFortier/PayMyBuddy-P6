@@ -1,8 +1,10 @@
 package com.payMyBuddy.app.security;
 
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import com.payMyBuddy.app.security.annotation.ValidEmail;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

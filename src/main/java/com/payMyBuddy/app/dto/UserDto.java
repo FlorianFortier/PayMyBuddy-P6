@@ -1,34 +1,30 @@
 package com.payMyBuddy.app.dto;
 
-import com.payMyBuddy.app.security.PasswordMatches;
-import com.payMyBuddy.app.security.ValidEmail;
+import com.payMyBuddy.app.security.annotation.PasswordMatches;
+import com.payMyBuddy.app.security.annotation.ValidEmail;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
 
-import javax.validation.constraints.NotEmpty;
 
 @PasswordMatches
 @Getter
 @Setter
 public class UserDto {
 
-   @NotNull
    @NotEmpty
    private String firstName;
-
     @NotNull
     @NotEmpty
     private String lastName;
-
     @NotNull
     @NotEmpty
-
     private String password;
+    @NotEmpty
     private String matchingPwd;
 
     @ValidEmail
-    @NotNull
     @NotEmpty
     private String email;
 

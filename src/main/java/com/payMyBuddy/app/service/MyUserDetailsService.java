@@ -6,6 +6,7 @@ import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.model.VerificationToken;
 import com.payMyBuddy.app.repository.UserRepository;
+import com.payMyBuddy.app.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +26,8 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private VerificationTokenRepository tokenRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -65,8 +68,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public User getUser(String verificationToken) {
-        User user = tokenRepository.findByToken(verificationToken).getUser();
-        return user;
+        return tokenRepository.findByToken(verificationToken).getUser();
     }
 
     public VerificationToken getVerificationToken(String VerificationToken) {
@@ -74,7 +76,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public void saveRegisteredUser(User user) {
-        repository.save(user);
+        userRepository.save(user);
     }
 
     public void createVerificationToken(User user, String token) {

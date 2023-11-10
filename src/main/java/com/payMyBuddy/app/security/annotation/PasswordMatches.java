@@ -1,9 +1,10 @@
-package com.payMyBuddy.app.security;
+package com.payMyBuddy.app.security.annotation;
 
 import com.payMyBuddy.app.security.PasswordMatchesValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
