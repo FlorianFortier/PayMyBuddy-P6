@@ -49,7 +49,7 @@ public class User implements Serializable, UserDetails {
 
     public User() {
         super();
-        this.enabled=true;
+        this.enabled=false;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return false;
     }
 
 }
