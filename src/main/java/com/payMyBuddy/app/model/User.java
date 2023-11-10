@@ -39,13 +39,17 @@ public class User implements Serializable, UserDetails {
     private String password;
     @Column(name = "created_at")
     private String createdAt;
+    @Column(name = "enabled")
+    private boolean enabled;
 
 
     public User(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, List<GrantedAuthority> authorities) {
+
     }
 
     public User() {
-
+        super();
+        this.enabled=true;
     }
 
     @Override
@@ -73,10 +77,4 @@ public class User implements Serializable, UserDetails {
         return true;
     }
 
-    public void setRoles(List<String> roleUser) {
-    }
-
-    public List<String> getRoles() {
-        return null;
-    }
 }

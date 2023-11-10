@@ -2,7 +2,9 @@ package com.payMyBuddy.app.service;
 
 import com.payMyBuddy.app.dto.UserDto;
 import com.payMyBuddy.app.exception.EmailAlreadyExistException;
+import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
+import com.payMyBuddy.app.model.VerificationToken;
 import com.payMyBuddy.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,20 +43,42 @@ public class MyUserDetailsService implements UserDetailsService {
         return authorities;
     }
 
-    public User registerNewUserAccount(UserDto accountDto) throws EmailAlreadyExistException {
+    public User registerNewUserAccount(UserDto userDto) throws EmailAlreadyExistException {
+        if (emailExists(userDto.getEmail())) {
+            throw new UserAlreadyExistException("There is an account with that email address: "
+                    + userDto.getEmail());
+        }
 
         User user = new User();
-        user.setFirstName(accountDto.getFirstName());
-        user.setLastName(accountDto.getLastName());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
 
-        user.setPassword((accountDto.getPassword()));
+        user.setPassword((userDto.getPassword()));
 
-        user.setEmail(accountDto.getEmail());
+        user.setEmail(userDto.getEmail());
 //        user.setRole(new Role(Integer.valueOf(1), user));
         return userRepository.save(user);
     }
 
     private boolean emailExists(String email) {
         return userRepository.findByEmail(email) != null;
+    }
+
+    public User getUser(String verificationToken) {
+        User user = tokenRepository.findByToken(verificationToken).getUser();
+        return user;
+    }
+
+    public VerificationToken getVerificationToken(String VerificationToken) {
+        return tokenRepository.findByToken(VerificationToken);
+    }
+
+    public void saveRegisteredUser(User user) {
+        repository.save(user);
+    }
+
+    public void createVerificationToken(User user, String token) {
+        VerificationToken myToken = new VerificationToken(token, user);
+        tokenRepository.save(myToken);
     }
 }

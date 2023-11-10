@@ -3,8 +3,11 @@ package com.payMyBuddy.app.controller;
 import com.payMyBuddy.app.dto.UserDto;
 import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
+import com.payMyBuddy.app.security.OnRegistrationCompleteEvent;
 import com.payMyBuddy.app.service.MyUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +23,8 @@ import javax.validation.Valid;
 public class RegistrationController {
 
     private final MyUserDetailsService userService;
-
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
     public RegistrationController(MyUserDetailsService userService) {
         this.userService = userService;
     }
@@ -47,7 +51,13 @@ public class RegistrationController {
         }
         try {
             User registered = userService.registerNewUserAccount(userDto);
-//            mav.setViewName("successRegister"); // Assurez-vous d'avoir une vue nommée "successRegister"
+
+            String appUrl = request.getContextPath();
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered,
+                    request.getLocale(), appUrl));
+
+
+            mav.setViewName("successRegister"); // Assurez-vous d'avoir une vue nommée "successRegister"
             mav.addObject("user", userDto);
         } catch (UserAlreadyExistException uaeEx) {
             mav.setViewName("registration"); // Renvoyer l'utilisateur au formulaire d'inscription en cas d'erreur
