@@ -7,6 +7,9 @@
 <body>
 <h1 th:text="#{label.form.title}">Form</h1>
 <form action="/registration" th:object="${user}" method="POST" enctype="multipart/form-data">
+    <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}" />
     <div>
         <label th:text="#{label.user.firstName}">First Name</label>
         <input th:field="*{firstName}" type="text"/>
@@ -19,7 +22,7 @@
     </div>
     <div>
         <label th:text="#{label.user.email}">Email</label>
-        <input th:field="*{lastName}" type="email"/>
+        <input th:field="*{email}" type="email"/>
         <p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation error</p>
     </div>
     <div>
