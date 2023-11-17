@@ -1,11 +1,14 @@
 package com.payMyBuddy.app.security;
 
+import com.payMyBuddy.app.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -27,9 +30,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response, AuthenticationException exception)
             throws IOException, ServletException {
-        setDefaultFailureUrl("/login.html?error=true");
-
-        super.onAuthenticationFailure(request, response, exception);
+        setDefaultFailureUrl("/error.html");
 
         Locale locale = localeResolver.resolveLocale(request);
 
@@ -42,5 +43,20 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         }
 
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);
+
+        // Ajoutez la vérification pour bloquer la connexion si l'utilisateur n'est pas activé
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+            if (!user.isEnabled()) {
+                // L'utilisateur n'est pas activé, géré cette situation comme une erreur
+                response.sendRedirect("/error.html");
+                return;
+            }
+        }
+
+        super.onAuthenticationFailure(request, response, exception);
     }
 }
+
+

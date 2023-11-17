@@ -13,8 +13,7 @@
     <div>
         <label th:text="#{label.user.firstName}">First Name</label>
         <input th:field="*{firstName}" type="text"/>
-        <p th:each="error : ${#fields.errors('firstName')}" th:text="${error}">Validation error</p>
-    </div>
+        <p th:each="error : ${#fields.errors('firstName')}" th:text="${error}">Validation error</p></div>
     <div>
         <label th:text="#{label.user.lastName}">Last Name</label>
         <input th:field="*{lastName}" type="text"/>

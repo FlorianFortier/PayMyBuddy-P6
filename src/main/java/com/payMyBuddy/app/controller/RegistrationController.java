@@ -5,7 +5,9 @@ import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.model.VerificationToken;
 import com.payMyBuddy.app.security.OnRegistrationCompleteEvent;
-import com.payMyBuddy.app.service.MyUserDetailsService;
+
+import com.payMyBuddy.app.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,25 +21,27 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.UUID;
 
 @Controller
 public class RegistrationController {
 
-    private final MyUserDetailsService userService;
+    private final UserService userService;
+    private final MessageSource messages;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    private MessageSource messages;
-
-
-    @Autowired
-    ApplicationEventPublisher eventPublisher;
-    public RegistrationController(MyUserDetailsService userService) {
+    public RegistrationController(UserService userService, MessageSource messages, ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
+        this.messages = messages;
+        this.eventPublisher = eventPublisher;
     }
 
     @GetMapping("/registration")
@@ -48,58 +52,55 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public ModelAndView registerUserAccount(
+    public String registerUserAccount(
             @ModelAttribute("user") @Valid UserDto userDto,
             BindingResult bindingResult,
-            HttpServletRequest request) {
-
-        ModelAndView mav = new ModelAndView();
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            // Si des erreurs de validation sont présentes, renvoyer l'utilisateur au formulaire d'inscription
-            mav.setViewName("registration"); // Assurez-vous d'avoir une vue nommée "registration"
-            return mav;
+            return "registration";
         }
+
         try {
             User registered = userService.registerNewUserAccount(userDto);
 
             String appUrl = request.getContextPath();
+            String generatedToken = UUID.randomUUID().toString();
+
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered,
-                    request.getLocale(), appUrl));
+                    request.getLocale(), appUrl, generatedToken));
 
-
-            mav.setViewName("successRegister"); // Assurez-vous d'avoir une vue nommée "successRegister"
-            mav.addObject("user", userDto);
+            redirectAttributes.addFlashAttribute("registrationSuccessMessage", messages.getMessage("success.register.message", null, request.getLocale()));
         } catch (UserAlreadyExistException uaeEx) {
-            mav.setViewName("registration"); // Renvoyer l'utilisateur au formulaire d'inscription en cas d'erreur
-            mav.addObject("message", "An account for that username/email already exists.");
+            redirectAttributes.addFlashAttribute("message", "An account for that username/email already exists.");
+            return "redirect:/registration";
         }
-        return new ModelAndView("successRegister", "user", userDto);
+
+        return "redirect:/login";
     }
 
-    @GetMapping("/regitrationConfirm")
-    public String confirmRegistration
-            (WebRequest request, Model model, @RequestParam("token") String token) {
-
+    @GetMapping("/registrationConfirm")
+    public String confirmRegistration(WebRequest request, @RequestParam("token") String token, RedirectAttributes redirectAttributes) throws MessagingException {
         Locale locale = request.getLocale();
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            String message = messages.getMessage("auth.message.invalidToken", null, locale);
-            model.addAttribute("message", message);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
+            redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.message.invalidToken", null, locale));
+            return "error" + locale.getLanguage();
         }
 
         User user = verificationToken.getUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = messages.getMessage("auth.message.expired", null, locale);
-            model.addAttribute("message", messageValue);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
+            redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.message.expired", null, locale));
+            return "error" + locale.getLanguage();
         }
 
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
-        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+
+        return "redirect:/login?lang=" + request.getLocale().getLanguage();
     }
 }
+

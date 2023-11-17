@@ -16,28 +16,39 @@ import java.util.List;
 
 @Service
 @Transactional
-public class MyUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
-    public MyUserDetailsService() {
+    public CustomUserDetailsService() {
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("No user found with username: " + email);
+            throw new UsernameNotFoundException("No user found with email: " + email);
         }
-        return user;
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.isEnabled(), // Set the 'enabled' attribute based on your User entity
+                true, // Account non-expired
+                true, // Credentials non-expired
+                true, // Account non-locked
+                getAuthorities(user.getRoles())
+        );
     }
+
 
     private static List<GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
         }
         return authorities;
     }
+
 }

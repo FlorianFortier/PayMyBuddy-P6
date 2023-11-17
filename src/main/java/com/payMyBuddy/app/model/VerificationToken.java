@@ -15,10 +15,10 @@ import java.util.Date;
 @Getter
 @Setter
 public class VerificationToken {
-    private static final int EXPIRATION = 60 * 24;
+    private static final int EXPIRATION = 15;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String token;
@@ -30,6 +30,9 @@ public class VerificationToken {
     private Date expiryDate;
 
     public VerificationToken(String token, User user) {
+        this.token = token;
+        this.user = user;
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
     public VerificationToken() {

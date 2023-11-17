@@ -1,13 +1,11 @@
 package com.payMyBuddy.app.security;
 
 
-import com.payMyBuddy.app.service.MyUserDetailsService;
+import com.payMyBuddy.app.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,8 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.Properties;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -27,21 +23,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Autowired
-    private final MyUserDetailsService myUserDetailsService;
-
+    private final CustomUserDetailsService myUserDetailsService;
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(myUserDetailsService);
     }
 
-    public SecurityConfig(MyUserDetailsService myUserDetailsService) {
+    public SecurityConfig(CustomUserDetailsService myUserDetailsService, CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.myUserDetailsService = myUserDetailsService;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -50,16 +48,22 @@ public class SecurityConfig {
         http.cors(withDefaults())
                 .csrf(withDefaults())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/registration", "/login").permitAll()
+                        .requestMatchers("/", "/registration", "/login","/registrationConfirm").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/perform_login")
+                        .defaultSuccessUrl("/index.html")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll);
-
+                .logout(logout ->
+                        logout
+                            .logoutSuccessUrl("/login.html?logout=true")
+                            .permitAll()
+                );
         return http.build();
     }
 
@@ -68,7 +72,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(myUserDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(encoder());
         return authProvider;
     }
 
