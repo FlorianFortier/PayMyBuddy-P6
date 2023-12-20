@@ -4,35 +4,27 @@ import com.payMyBuddy.app.model.User;
 
 import com.payMyBuddy.app.service.UserService;
 import com.payMyBuddy.app.util.EmailServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 
-import org.springframework.mail.SimpleMailMessage;
 
-
-
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.context.Context;
-
-import java.util.UUID;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private MessageSource messages;
+    private final UserService userService;
+    private final MessageSource messages;
+    private final EmailServiceImpl emailService;
 
-    @Autowired
-    private EmailServiceImpl emailService;
+    public RegistrationListener(UserService userService,MessageSource messages,EmailServiceImpl emailService) {
+        this.userService = userService;
+        this.messages = messages;
+        this.emailService = emailService;
+    }
 
     @Value("${app.base.url}")
     private String appBaseUrl;

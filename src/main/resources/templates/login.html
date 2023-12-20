@@ -10,14 +10,16 @@
 </head>
 <body>
 
+<!--/*@thymesVar id="registrationSuccess" type=""*/-->
 <div th:if="${registrationSuccess}" class="alert alert-success">
     <p th:text="#{success.register.message}"></p>
 </div>
-<div th:if="${emailNotConfirmed}" class="alert alert-error">
+<!--/*@thymesVar id="emailNotConfirmed" type=""*/-->
+<div th:if="${emailNotConfirmed}" class="alert alert-danger">
     <p th:text="#{login.email.notConfirmed}"></p>
 </div>
-<div th:if="${error}">
-    <p th:text="${error}"></p>
+<div th:if="${message}">
+    <p th:text="${message}"></p>
 </div>
 
 <form th:action="@{/perform_login}" method="post" class="container-sm d-flex flex-column w-100 align-items-center ">

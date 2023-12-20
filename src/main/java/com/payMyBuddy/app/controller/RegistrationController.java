@@ -7,7 +7,6 @@ import com.payMyBuddy.app.model.VerificationToken;
 import com.payMyBuddy.app.security.OnRegistrationCompleteEvent;
 
 import com.payMyBuddy.app.service.UserService;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,6 @@ public class RegistrationController {
     private final MessageSource messages;
 
     private final ApplicationEventPublisher eventPublisher;
-    private boolean registrationSuccess = false;
 
     @Autowired
     public RegistrationController(UserService userService, MessageSource messages, ApplicationEventPublisher eventPublisher) {
@@ -71,29 +69,28 @@ public class RegistrationController {
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered,
                 request.getLocale(), appUrl, generatedToken));
             redirectAttributes.addFlashAttribute("registrationSuccess", true);
-            registrationSuccess = true;
         } catch (UserAlreadyExistException uaeEx) {
-            redirectAttributes.addFlashAttribute("message", "An account for that username/email already exists.");
+            redirectAttributes.addFlashAttribute("registrationErrorUserAlreadyExist", true);
             return "redirect:/registration";
         }
         return "redirect:/login";
     }
 
     @GetMapping("/registrationConfirm")
-    public String confirmRegistration(WebRequest request, @RequestParam("token") String token, RedirectAttributes redirectAttributes) throws MessagingException {
+    public String confirmRegistration(WebRequest request, @RequestParam("token") String token, RedirectAttributes redirectAttributes) {
         Locale locale = request.getLocale();
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.message.invalidToken", null, locale));
-            return "error" + locale.getLanguage();
+            return locale.getLanguage();
         }
 
         User user = verificationToken.getUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.message.expired", null, locale));
-            return "error" + locale.getLanguage();
+            return locale.getLanguage();
         }
 
         user.setEnabled(true);

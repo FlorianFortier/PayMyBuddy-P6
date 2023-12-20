@@ -42,25 +42,21 @@
                 <button>Add Connection</button>
             </div>
         </div>
-            <div class="row">
-                <div class="col-6 align-items-center d-flex w-100 justify-content-between">
-                    <label>
-                        <select name="connection" id="connection-select">
-                            <option value="">--Please choose an option--</option>
-                            <option value="dog">Dog</option>
-                            <option value="cat">Cat</option>
-                            <option value="hamster">Hamster</option>
-                            <option value="parrot">Parrot</option>
-                            <option value="spider">Spider</option>
-                            <option value="goldfish">Goldfish</option>
-                        </select>
-                    </label>
-                    <label>
-                        <input type="number" name="amount" id="amount" placeholder="0€">
-                    </label>
-                    <button>Add Connection</button>
-                </div>
+        <div class="row">
+            <div class="col-6 align-items-center d-flex w-100 justify-content-between">
+                <label>
+                    <select name="contacts" id="contacts-select">
+                        <option value="">----</option>
+                        <option th:each="contact : ${contacts}" th:text="${contact.contact.firstName}"></option>
+
+                    </select>
+                </label>
+                <label>
+                    <input type="number" name="amount" id="amount" placeholder="0€">
+                </label>
+                <button>Add Connection</button>
             </div>
+        </div>
     </section>
     <section class="container">
         <div class="row">
@@ -68,28 +64,18 @@
                 <h3>My Transaction</h3>
                 <table class="table table-striped table-borderless table-hover border-black border-1 border ">
                     <thead>
-                    <tr class="">
-                        <th>Connections</th>
-                        <th>Description</th>
-                        <th>Amount</th>
-                    </tr>
+                        <tr class="">
+                            <td>Connections</td>
+                            <td>Description</td>
+                            <td>Amount</td>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>This is a description</td>
-                        <td>$100</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>This is another description</td>
-                        <td>$200</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>This is a third description</td>
-                        <td>$300</td>
-                    </tr>
+                        <tr class="" th:each="transfer : ${tranfers}">
+                            <th th:text="${transfer.getEmitterUserId().firstName}"></th>
+                            <th th:text="${transfer.description}"></th>
+                            <th th:text="${transfer.amount}"></th>
+                        </tr>
                     </tbody>
                 </table>
                 <nav aria-label="Pagination for transactions" class="d-flex align-items-center justify-content-center">

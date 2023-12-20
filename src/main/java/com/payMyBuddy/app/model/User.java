@@ -2,8 +2,6 @@ package com.payMyBuddy.app.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -56,10 +54,10 @@ public class User implements Serializable, UserDetails {
     private double balance;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "emitterUserId")
-    private List<Transaction> emitterUserListOperation;
+    private List<Transfer> emitterUserListOperation;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiverUserId")
-    private List<Transaction> receiverUserListOperation;
+    private List<Transfer> receiverUserListOperation;
     public User(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, List<GrantedAuthority> authorities) {
 
     }
