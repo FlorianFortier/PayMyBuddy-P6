@@ -1,6 +1,6 @@
 package com.payMyBuddy.app.controller;
 
-import com.payMyBuddy.app.dto.UserDto;
+import com.payMyBuddy.app.dto.UserDTO;
 import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.model.VerificationToken;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.util.Calendar;
@@ -36,6 +35,7 @@ public class RegistrationController {
     private final MessageSource messages;
 
     private final ApplicationEventPublisher eventPublisher;
+    private boolean registrationSuccess = false;
 
     @Autowired
     public RegistrationController(UserService userService, MessageSource messages, ApplicationEventPublisher eventPublisher) {
@@ -46,14 +46,14 @@ public class RegistrationController {
 
     @GetMapping("/registration")
     public String showRegistrationForm(WebRequest request, Model model) {
-        UserDto userDto = new UserDto();
+        UserDTO userDto = new UserDTO();
         model.addAttribute("user", userDto);
         return "registration"; // Assurez-vous d'avoir une vue nommée "registration"
     }
 
     @PostMapping("/registration")
     public String registerUserAccount(
-            @ModelAttribute("user") @Valid UserDto userDto,
+            @ModelAttribute("user") @Valid UserDTO userDto,
             BindingResult bindingResult,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
@@ -69,14 +69,13 @@ public class RegistrationController {
             String generatedToken = UUID.randomUUID().toString();
 
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered,
-                    request.getLocale(), appUrl, generatedToken));
-
-            redirectAttributes.addFlashAttribute("registrationSuccessMessage", messages.getMessage("success.register.message", null, request.getLocale()));
+                request.getLocale(), appUrl, generatedToken));
+            redirectAttributes.addFlashAttribute("registrationSuccess", true);
+            registrationSuccess = true;
         } catch (UserAlreadyExistException uaeEx) {
             redirectAttributes.addFlashAttribute("message", "An account for that username/email already exists.");
             return "redirect:/registration";
         }
-
         return "redirect:/login";
     }
 

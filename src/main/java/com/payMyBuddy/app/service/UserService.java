@@ -1,6 +1,6 @@
 package com.payMyBuddy.app.service;
 
-import com.payMyBuddy.app.dto.UserDto;
+import com.payMyBuddy.app.dto.UserDTO;
 import com.payMyBuddy.app.exception.UserAlreadyExistException;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.model.VerificationToken;
@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     private VerificationTokenRepository tokenRepository;
 
     @Override
-    public User registerNewUserAccount(UserDto userDto) throws UserAlreadyExistException {
+    public User registerNewUserAccount(UserDTO userDto) throws UserAlreadyExistException {
 
         if (emailExist(userDto.getEmail())) {
             throw new UserAlreadyExistException(

@@ -1,0 +1,24 @@
+
+input {
+    padding-bottom: 3rem;
+}
+
+.contour-form {
+    border: grey solid .1rem !important;
+    padding: 1rem;
+    border-radius: 2%;
+}
+
+.nav-custom {
+
+    background-color: #fff;
+    color: #000;
+    width: 3fr;
+}
+.nav-custom:nth-child(*) {
+    grid-row: 1;
+}
+
+a {
+    text-decoration: none !important;
+}

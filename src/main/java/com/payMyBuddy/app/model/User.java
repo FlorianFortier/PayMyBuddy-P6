@@ -16,8 +16,6 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "user")
-@Getter
-@Setter
 public class User implements Serializable, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +37,13 @@ public class User implements Serializable, UserDetails {
     @Column(name= "pwd")
 
     private String password;
+
     @Column(name = "created_at")
     private String createdAt;
+
     @Column(name = "enabled")
     private boolean enabled;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
@@ -51,7 +52,14 @@ public class User implements Serializable, UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private VerificationToken verificationToken;
 
+    @Column(name = "balance", nullable = false)
+    private double balance;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "emitterUserId")
+    private List<Transaction> emitterUserListOperation;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiverUserId")
+    private List<Transaction> receiverUserListOperation;
     public User(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, List<GrantedAuthority> authorities) {
 
     }

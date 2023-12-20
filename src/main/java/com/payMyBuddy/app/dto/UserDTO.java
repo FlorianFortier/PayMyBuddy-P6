@@ -11,7 +11,7 @@ import lombok.Setter;
 @PasswordMatches
 @Getter
 @Setter
-public class UserDto {
+public class UserDTO {
 
    @NotEmpty
    private String firstName;

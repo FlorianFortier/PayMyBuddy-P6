@@ -1,6 +1,6 @@
 package com.payMyBuddy.app.security;
 
-import com.payMyBuddy.app.dto.UserDto;
+import com.payMyBuddy.app.dto.UserDTO;
 import com.payMyBuddy.app.security.annotation.PasswordMatches;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -13,7 +13,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
     }
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
-        UserDto user = (UserDto) obj;
+        UserDTO user = (UserDTO) obj;
         return user.getPassword().equals(user.getMatchingPwd());
     }
 }

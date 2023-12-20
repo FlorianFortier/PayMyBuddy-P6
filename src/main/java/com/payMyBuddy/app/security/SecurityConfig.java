@@ -3,6 +3,7 @@ package com.payMyBuddy.app.security;
 
 import com.payMyBuddy.app.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,7 +50,7 @@ public class SecurityConfig {
         http.cors(withDefaults())
                 .csrf(withDefaults())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/registration", "/login","/registrationConfirm").permitAll()
+                        .requestMatchers("/registration", "/login","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/index.html", "/index.html").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

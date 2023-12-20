@@ -12,7 +12,8 @@ public class MessageSourceConfig {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setCacheSeconds(3600); // Peut être ajusté selon vos besoins de rechargement
+        messageSource.setCacheSeconds(3600);
         return messageSource;
     }
+
 }
