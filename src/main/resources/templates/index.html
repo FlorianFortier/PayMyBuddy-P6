@@ -18,18 +18,17 @@
         <span class="btn btn-success w-25 my-1 h mb-5 text-center align-items-center" id="navbar-paymybuddy">Pay My Buddy</span>
         <div class="hiding py-2"></div>
         <ul class="d-flex justify-content-around align-items-center nav-custom me-5 py-2">
-            <li><a href="connexion.php" class="mx-2">Home</a></li>
-            <li><a href="index.php" class="mx-2">Transfer</a></li>
-            <li><a href="inscription.php" class="mx-2">Profile</a></li>
-            <li><a href="connexion.php" class="mx-2">Contact</a></li>
-            <li><a href="connexion.php" class="mx-2">Log off</a></li>
+            <li><a href="" class="mx-2">Home</a></li>
+            <li><a href="" class="mx-2">Transfer</a></li>
+            <li><a href="" class="mx-2">Profile</a></li>
+            <li><a href="" class="mx-2">Contact</a></li>
+            <li><a href="" class="mx-2">Log off</a></li>
         </ul>
     </nav>
     <section>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Fil d'Ariane</li>
+                <li class="breadcrumb-item active"><a href="/">Accueil</a></li>
             </ol>
         </nav>
     </section>
@@ -45,19 +44,23 @@
         <div class="row">
             <div class="col-6 align-items-center d-flex w-100 justify-content-between">
                 <label>
-                    <select name="contacts" id="contacts-select">
-                        <option value="">----</option>
-                        <option th:each="contact : ${contacts}" th:text="${contact.contact.firstName}"></option>
+                    <select name="contacts" id="contacts-select" class="form-select">
+                        <option selected value="">----</option>
+                        <option th:each="contact : ${contacts}" th:text="${contact.contact.firstName}" th:value="contact"></option>
 
                     </select>
                 </label>
                 <label>
-                    <input type="number" name="amount" id="amount" placeholder="0€">
+                    <input type="number" name="amount" id="amount" placeholder="0€" class="form-control">
                 </label>
-                <button>Add Connection</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#moneyModal" th:text="#{button.text.moneyTransfer}"></button>
             </div>
         </div>
     </section>
+
+    <!-- Modal -->
+    <div th:include="fragments/modalSendMoney"></div>
+
     <section class="container">
         <div class="row">
             <div class="col-12">
@@ -71,7 +74,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="" th:each="transfer : ${tranfers}">
+                        <tr class="" th:each="transfer : ${transactions}">
                             <th th:text="${transfer.getEmitterUserId().firstName}"></th>
                             <th th:text="${transfer.description}"></th>
                             <th th:text="${transfer.amount}"></th>

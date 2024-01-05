@@ -1,7 +1,9 @@
 package com.payMyBuddy.app.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +12,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Table(name = "user")
 public class User implements Serializable, UserDetails {
     @Id
@@ -48,25 +54,31 @@ public class User implements Serializable, UserDetails {
     private List<String> roles;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Transient
     private VerificationToken verificationToken;
 
     @Column(name = "balance", nullable = false)
     private double balance;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_id")
+    private Bank bank;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "emitterUserId")
-    private List<Transfer> emitterUserListOperation;
+    @ToString.Exclude
+    @Transient
+    private List<Transaction> emitterUserListOperation;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiverUserId")
-    private List<Transfer> receiverUserListOperation;
-    public User(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, List<GrantedAuthority> authorities) {
+    @ToString.Exclude
+    @Transient
+    private List<Transaction> receiverUserListOperation;
 
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Contact> userListContact;
 
-    public User() {
-        super();
-        this.enabled=false;
-
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contact")
+    private List<Contact> contactListContact;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -99,5 +111,21 @@ public class User implements Serializable, UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

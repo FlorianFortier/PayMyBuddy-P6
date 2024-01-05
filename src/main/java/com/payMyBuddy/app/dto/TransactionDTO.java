@@ -7,14 +7,14 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class TransferDTO {
+public class TransactionDTO {
         private String name;
 
         private double amount;
 
         private String description;
 
-        public TransferDTO(String moneyHolderName, double amount, String description) {
+        public TransactionDTO(String moneyHolderName, double amount, String description) {
             this.name = moneyHolderName;
             this.amount = amount;
             this.description = description;
@@ -24,7 +24,7 @@ public class TransferDTO {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            TransferDTO that = (TransferDTO) o;
+            TransactionDTO that = (TransactionDTO) o;
             return amount == that.amount &&
                     Objects.equals(name, that.name) &&
                     Objects.equals(description, that.description);

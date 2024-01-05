@@ -13,44 +13,45 @@
     <p th:text="#{error.register.alreadyExist}"></p>
 </div>
 
-<h1 th:text="#{label.form.title}">Form</h1>
-<form action="/registration" th:object="${user}" method="POST" enctype="multipart/form-data">
-    <input type="hidden"
-           th:name="${_csrf.parameterName}"
-           th:value="${_csrf.token}" />
+<form action="/registration" th:object="${user}" method="POST" class="container-sm d-flex flex-column w-100 align-items-center h-100 justify-content-center" enctype="multipart/form-data">
+    <div class="contour-form d-flex flex-column align-items-center">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+        <span class="btn btn-success w-75 mb-5 d-flex justify-content-center">Pay My Buddy</span>
 
-    <div>
-        <label th:text="#{label.user.firstName}" for="firstName">First Name</label>
-        <input id="firstName" th:field="*{firstName}" th:placeholder="#{placeholder.firstName}" type="text"/>
-        <p th:each="error : ${#fields.errors('firstName')}" th:text="${error}">Validation error</p>
+        <div class="mb-3">
+            <div class="d-flex flex-column">
+                <label th:text="#{label.user.firstName}" for="firstName" class="mb-3">First Name</label>
+                <input id="firstName" th:field="*{firstName}" class="form-control" th:placeholder="#{placeholder.firstName}" type="text"/>
+            </div>
+              <p th:each="error : ${#fields.errors('firstName')}" th:text="${error}" class="form-control">Validation error</p>
+        </div>
+        <div class="d-flex flex-column mb-3">
+            <label th:text="#{label.user.lastName}" for="lastName" class="mb-3">Last Name</label>
+            <input id="lastName" th:field="*{lastName}" th:placeholder="#{placeholder.lastName}" class="form-control" type="text"/>
+            <p th:each="error : ${#fields.errors('lastName')}" th:text="${error}">Validation error</p>
+        </div>
+        <div class="d-flex flex-column mb-3">
+            <label th:text="#{label.user.email}" for="email" class="mb-3">Email</label>
+            <input id="email" th:field="*{email}" class="form-control" type="email"/>
+            <p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation error</p>
+        </div>
+
+        <div class="d-flex flex-column mb-3">
+            <label th:text="#{label.user.password}" for="password" class="mb-3">Password</label>
+            <input id="password" th:field="*{password}" class="form-control" type="password"/>
+            <p th:each="error : ${#fields.errors('password')}" th:text="${error}">Validation error</p>
+        </div>
+
+        <div class="d-flex flex-column mb-3">
+            <label th:text="#{label.user.confirmPass}" for="confirmPassword" class="mb-3">Confirm Password</label>
+            <input id="confirmPassword" th:field="*{matchingPwd}" class="form-control" type="password"/>
+        </div>
+        <a th:href="@{/login}" th:text="#{label.form.loginLink}" class="mb-3">Login</a>
+        <button type="submit" th:text="#{label.form.submit}" class="btn btn-primary ali d-flex w-50 justify-content-center">Submit</button>
     </div>
-
-    <div>
-        <label th:text="#{label.user.lastName}" for="lastName">Last Name</label>
-        <input id="lastName" th:field="*{lastName}" th:placeholder="#{placeholder.lastName}" type="text"/>
-        <p th:each="error : ${#fields.errors('lastName')}" th:text="${error}">Validation error</p>
-    </div>
-
-    <div>
-        <label th:text="#{label.user.email}" for="email">Email</label>
-        <input id="email" th:field="*{email}" type="email"/>
-        <p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation error</p>
-    </div>
-
-    <div>
-        <label th:text="#{label.user.password}" for="password">Password</label>
-        <input id="password" th:field="*{password}" type="password"/>
-        <p th:each="error : ${#fields.errors('password')}" th:text="${error}">Validation error</p>
-    </div>
-
-    <div>
-        <label th:text="#{label.user.confirmPass}" for="confirmPassword">Confirm Password</label>
-        <input id="confirmPassword" th:field="*{matchingPwd}" type="password"/>
-    </div>
-
-    <button type="submit" th:text="#{label.form.submit}">Submit</button>
 </form>
 
-<a th:href="@{/login.html}" th:text="#{label.form.loginLink}">Login</a>
 </body>
 </html>

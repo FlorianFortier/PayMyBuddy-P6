@@ -22,9 +22,9 @@
     <p th:text="${message}"></p>
 </div>
 
-<form th:action="@{/perform_login}" method="post" class="container-sm d-flex flex-column w-100 align-items-center ">
+<form th:action="@{/perform_login}" method="post" class="container-sm d-flex flex-column w-100 align-items-center h-100 justify-content-center">
     <div class="contour-form d-flex flex-column align-items-center">
-        <span class="btn btn-success w-75 mb-5 d-flex text-center">Pay My Buddy</span>
+        <span class="btn btn-success w-75 mb-5 d-flex justify-content-center">Pay My Buddy</span>
         <div class="mb-3">
             <label>
                 <input type="text" name="username" th:placeholder="#{placeholder.email}" class="form-control"/>
@@ -43,7 +43,9 @@
                 Remember me
             </span>
         </div>
+        <a th:href="@{/registration}" th:text="#{label.form.registerLink}" class="mb-3"></a>
         <input type="submit" value="Log in" class="btn btn-primary ali d-flex w-50"/>
+
     </div>
 </form>
 </body>

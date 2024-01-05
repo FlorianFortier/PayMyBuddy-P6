@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "transaction")
-public class Transfer {
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -24,6 +24,14 @@ public class Transfer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_user_id", updatable = false)
     private User receiverUserId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiverBankId", updatable = false)
+    private Bank receiverBankId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emitterBankId", updatable = false)
+    private Bank emitterBankId;
 
     @CreationTimestamp
     @Column(name = "created_at", insertable = false, updatable = false)
