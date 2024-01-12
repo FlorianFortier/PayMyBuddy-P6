@@ -76,14 +76,14 @@ public class LoginController {
      */
     @GetMapping("/index.html")
     public String home(Model model, RedirectAttributes redirectAttribute) {
-        // Get the logged-in user
+        // Récupération de l'utilisateur connecté
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User loggedInUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User customUser = userService.getUserByEmail(loggedInUser.getUsername());
         List<Contact> contacts = contactService.getContactsByUserId(customUser.getId());
         List<Transaction> transactions = transactionService.getTransactionsByUserId(customUser.getId());
 
-        // Pass the contacts and transactions to the view
+        // Passer à la vue les contacts et transactions.
         model.addAttribute("contacts", contacts);
         model.addAttribute("transfers", transactions);
         return "index";

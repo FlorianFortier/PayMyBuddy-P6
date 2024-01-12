@@ -1,6 +1,5 @@
 package com.payMyBuddy.app.service;
 
-import com.payMyBuddy.app.dto.TransactionDTO;
 import com.payMyBuddy.app.dto.UserDTO;
 import com.payMyBuddy.app.exception.InsufficientFundsException;
 import com.payMyBuddy.app.model.Bank;
@@ -12,7 +11,6 @@ import com.payMyBuddy.app.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -96,32 +94,40 @@ public class TransactionService {
         }
     }
 
-    public UserDTO transferMoneyToUser(Authentication authentication, double amount, String recipientEmail) {
+    public void transferMoneyToUser(Authentication authentication, double amount, String recipientEmail) {
         User currentUser = userRepository.findByEmail(authentication.getName());
         User recipientUser = userRepository.findByEmail(recipientEmail);
 
         // Vérifier si l'utilisateur a suffisamment d'argent pour le transfert
         if (currentUser.getBalance() >= amount) {
+            // Calculer la commission (0.5%)
+            double fee = calculateFee(amount);
+
             // Créer une transaction
             Transaction transaction = new Transaction();
             transaction.setEmitterUserId(currentUser);
-            transaction.setAmount(amount);
+            transaction.setAmount(amount - fee); // Deduct the fee from the transfer amount
             transaction.setReceiverUserId(recipientUser);
             transactionRepository.save(transaction);
 
-            // Mettre à jour le solde de l'émetteur
-            currentUser.setBalance(currentUser.getBalance() - amount);
+            // Mettre à jour le solde de l'émetteur (déduire le montant total avec la commission)
+            currentUser.setBalance(currentUser.getBalance() - (amount - fee));
             userRepository.save(currentUser);
 
             // Mettre à jour le solde du destinataire
-            recipientUser.setBalance(recipientUser.getBalance() + amount);
+            recipientUser.setBalance(recipientUser.getBalance() + (amount - fee));
             userRepository.save(recipientUser);
 
-            return new UserDTO();
         } else {
             logger.error("Transfert échoué : Solde insuffisant.");
             throw new InsufficientFundsException(currentUser.getBalance(), amount);
         }
     }
 
+    // Méthode pour calculer la commission (0.5%)
+    private double calculateFee(double amount) {
+        // 0.5% of the transfer amount
+        double feePercentage = 0.005;
+        return amount * feePercentage;
+    }
 }

@@ -14,6 +14,8 @@ public class TransactionDTO {
 
         private String description;
 
+        private String email;
+
         public TransactionDTO(String moneyHolderName, double amount, String description) {
             this.name = moneyHolderName;
             this.amount = amount;
@@ -41,6 +43,7 @@ public class TransactionDTO {
                     "moneyHolderName='" + name + '\'' +
                     ", amount=" + amount +
                     ", description='" + description + '\'' +
+                    ", email='" + email + '\'' +
                     '}';
         }
 }

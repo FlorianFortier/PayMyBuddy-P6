@@ -1,0 +1,25 @@
+<html lang="" xmlns:th="http://www.thymeleaf.org">
+    <div class="modal fade" id="addConnectionModal" tabindex="-1" aria-labelledby="addConnectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addConnectionModalLabel">Add Connection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to add a new connection -->
+                    <form id="addConnectionForm" th:action="@{/contacts/addContact/{contactEmail}}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="contactEmail" name="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Connection</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</html>
+

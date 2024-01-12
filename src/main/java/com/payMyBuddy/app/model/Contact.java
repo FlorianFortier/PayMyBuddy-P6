@@ -1,12 +1,17 @@
 package com.payMyBuddy.app.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "contact")
+@RequiredArgsConstructor
+
 public class Contact {
 
     @Id
@@ -22,4 +27,6 @@ public class Contact {
     @JoinColumn(name = "contactId")
     private User contact;
 
+    public Contact(Long user, Long byEmail) {
+    }
 }

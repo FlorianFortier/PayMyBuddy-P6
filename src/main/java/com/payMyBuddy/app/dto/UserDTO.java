@@ -21,6 +21,7 @@ public class UserDTO {
     @NotNull
     @NotEmpty
     private String password;
+    @Getter
     @NotEmpty
     private String matchingPwd;
 
@@ -29,10 +30,6 @@ public class UserDTO {
     private String email;
 
     private String createdAt;
-
-    public String getMatchingPwd() {
-        return matchingPwd;
-    }
 
     private String[] roles;
 

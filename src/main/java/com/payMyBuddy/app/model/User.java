@@ -62,6 +62,7 @@ public class User implements Serializable, UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
+    @ToString.Exclude
     private Bank bank;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "emitterUserId")
@@ -75,9 +76,11 @@ public class User implements Serializable, UserDetails {
     private List<Transaction> receiverUserListOperation;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @ToString.Exclude
     private List<Contact> userListContact;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contact")
+    @ToString.Exclude
     private List<Contact> contactListContact;
 
     @Override
