@@ -15,10 +15,10 @@ input {
     color: #000;
     width: 3fr;
 }
-.nav-custom:nth-child(*) {
-    grid-row: 1;
+.nav-custom:nth-child(*) li {
+    color: black;
 }
-
 a {
     text-decoration: none !important;
 }
+

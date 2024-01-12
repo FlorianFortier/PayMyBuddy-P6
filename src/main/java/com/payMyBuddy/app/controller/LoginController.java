@@ -25,16 +25,10 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
 
-    private final TransactionService transactionService;
-    private final ContactService contactService;
 
-    private final UserService userService;
 
     LoginController(AuthenticationManager authenticationManager, TransactionService transactionService, ContactService contactService, UserService userService) {
         this.authenticationManager = authenticationManager;
-        this.transactionService = transactionService;
-        this.contactService = contactService;
-        this.userService = userService;
     }
 
     @GetMapping("/login")
@@ -62,7 +56,7 @@ public class LoginController {
 
         if (user.isEnabled()) {
             // Rediriger vers la page d'accueil après une connexion réussie
-            return "redirect:/index.html";
+            return "redirect:/transfer.html";
         } else {
             // Si l'utilisateur n'a pas confirmé son email, on le notifie
             redirectAttribute.addFlashAttribute("emailNotConfirmed", true);
@@ -70,25 +64,5 @@ public class LoginController {
         }
     }
 
-    /**
-     *
-     * @return view "index"
-     */
-    @GetMapping("/index.html")
-    public String home(Model model, RedirectAttributes redirectAttribute, HttpServletRequest request) {
-        String contactEmail = request.getParameter("email");
-        // Récupération de l'utilisateur connecté
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User loggedInUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User customUser = userService.getUserByEmail(loggedInUser.getUsername());
-        List<Contact> contacts = contactService.getContactsByUserId(customUser.getId());
-        List<Transaction> transactions = transactionService.getTransactionsByUserId(customUser.getId());
-        Double solde = customUser.getBalance();
 
-        // Passer à la vue les contacts et transactions.
-        model.addAttribute("contacts", contacts);
-        model.addAttribute("transfers", transactions);
-        model.addAttribute("solde", solde);
-        return "index";
-    }
 }

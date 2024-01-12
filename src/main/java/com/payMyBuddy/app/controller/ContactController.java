@@ -39,7 +39,7 @@ public class ContactController {
             model.addAttribute("errorMessage", e.getMessage());
         }
 
-        return "redirect:/index.html";
+        return "redirect:/transfer.html";
     }
 
 

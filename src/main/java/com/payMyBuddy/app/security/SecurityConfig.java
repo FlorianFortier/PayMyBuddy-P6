@@ -45,14 +45,14 @@ public class SecurityConfig {
         http.cors(withDefaults())
                 .csrf(withDefaults())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/registration", "/login","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/index.html", "/index.html").permitAll()
+                        .requestMatchers("/registration", "/login","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/transfer.html", "/transfer.html").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
-                        .defaultSuccessUrl("/index.html")
+                        .defaultSuccessUrl("/transfer.html")
                         .permitAll()
                 )
                 .logout(logout ->
