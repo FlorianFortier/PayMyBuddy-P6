@@ -16,7 +16,7 @@ public class ContactDTO {
     private final UserRepository userRepository;
     public String getEmail() {
         if (userId != null) {
-            User user = userRepository.findById(userId).orElse(null);
+            User user = userRepository.findById(contactId).orElse(null);
 
             // If the user is found, return the email; otherwise, return null
             return user != null ? user.getEmail() : null;

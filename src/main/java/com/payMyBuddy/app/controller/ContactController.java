@@ -1,5 +1,6 @@
 package com.payMyBuddy.app.controller;
 
+import com.payMyBuddy.app.exception.ContactUserNotFoundException;
 import com.payMyBuddy.app.model.Contact;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.repository.UserRepository;
@@ -8,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,17 +29,17 @@ public class ContactController {
         return "contacts"; // Assuming you have a contacts.html Thymeleaf template
     }
 
-    @PostMapping("/addContact/{contactEmail}")
-    public String addContact(@PathVariable String contactEmail, Authentication authentication, Model model) {
+    @PostMapping("/addContact")
+    public String addContact(@RequestParam("contactEmail") String contactEmail, Authentication authentication, Model model) {
         try {
             User currentUser = getUserFromAuthentication(authentication);
             contactService.addContact(currentUser, contactEmail);
-            model.addAttribute("contactEmail", contactEmail);
-
-            return "redirect:/index.html";
-        } catch (Exception e) {
-            return "redirect:/index.html";
+            model.addAttribute("successMessage", "Contact added successfully");
+        } catch (ContactUserNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
         }
+
+        return "redirect:/index.html";
     }
 
 

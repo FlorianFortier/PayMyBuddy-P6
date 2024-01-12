@@ -27,6 +27,8 @@ public class Contact {
     @JoinColumn(name = "contactId")
     private User contact;
 
-    public Contact(Long user, Long byEmail) {
+    public Contact(User user, User contact) {
+        this.user = user;
+        this.contact = contact;
     }
 }

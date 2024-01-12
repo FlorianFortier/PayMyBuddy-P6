@@ -18,11 +18,10 @@
         <span class="btn btn-success w-25 my-1 h mb-5 text-center align-items-center" id="navbar-paymybuddy">Pay My Buddy</span>
         <div class="hiding py-2"></div>
         <ul class="d-flex justify-content-around align-items-center nav-custom me-5 py-2">
-            <li><a href="" class="mx-2">Home</a></li>
-            <li><a href="" class="mx-2">Transfer</a></li>
-            <li><a href="" class="mx-2">Profile</a></li>
-            <li><a href="" class="mx-2">Contact</a></li>
-            <li><a href="" class="mx-2">Log off</a></li>
+            <li><a href="" class="mx-2" th:text="#{menu.home}"></a></li>
+            <li><a href="" class="mx-2 active-table-tab" th:text="#{menu.profil}"></a></li>
+            <li><a href="" class="mx-2" th:text="#{menu.contact}"></a></li>
+            <li><a href="" class="mx-2" th:text="#{menu.logoff}"></a></li>
         </ul>
     </nav>
     <section>
@@ -35,11 +34,24 @@
 </header>
 <main>
     <section class="container">
-        <div class="row mb-2">
+        <!-- Display success message if present -->
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <!-- Display error message if present -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div class="row mb-4">
             <div class="col-12 d-flex justify-content-between">
                 <h2>Send Money</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addConnectionModal">
-                    Add Connection
+                <div th:text="'Mon solde : ' + ${solde} + ' €'" class="p-3 mb-2 badge bg-success"></div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSoldeModal" th:text="#{button.text.addSolde}">
+                    Add Solde
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addConnectionModal" th:text="#{button.text.addConnection}">
                 </button>
             </div>
         </div>
@@ -47,7 +59,7 @@
         <div th:include="fragments/addConnectionModal"></div>
 
         <div class="row">
-                <form id="moneyTransferForm" action="/transfer" method="post" class="col-6 align-items-center d-flex w-100 justify-content-between">
+                <form id="moneyTransferForm" action="/transfer" method="post" class="col-6 align-items-center d-flex w-100 justify-content-between mb-3">
                     <label>
                         <select name="email" id="contacts-select" class="form-select">
                             <option selected value="">----</option>

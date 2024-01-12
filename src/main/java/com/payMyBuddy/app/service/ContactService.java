@@ -33,7 +33,7 @@ public class ContactService {
         User contactUser = userRepository.findByEmail(email);
 
         if (contactUser != null) {
-            Contact newContact = new Contact(user.getId(), contactUser.getId());
+            Contact newContact = new Contact(user, contactUser);
             contactRepository.save(newContact);
         } else {
             // Handle the case where the contact user is not found
@@ -41,5 +41,6 @@ public class ContactService {
             throw new ContactUserNotFoundException("Contact user not found for email: " + email);
         }
     }
+
 
 }
