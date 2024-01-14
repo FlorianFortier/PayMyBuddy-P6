@@ -21,9 +21,8 @@
             <li><a href="" class="mx-2" th:text="#{menu.home}"></a></li>
             <li><a href="" class="mx-2" th:text="#{menu.profil}"></a></li>
             <li><a href="" class="mx-2" th:text="#{menu.transfer}"></a></li>
-
             <li><a href="" class="mx-2" th:text="#{menu.contact}"></a></li>
-            <li><a href="" class="mx-2" th:text="#{menu.logoff}"></a></li>
+            <li><a  class="mx-2" th:text="#{menu.logoff}" th:href="@{logout}"></a></li>
         </ul>
     </nav>
     <section>
@@ -94,7 +93,7 @@
                     <tr th:each="transfer : ${transfers}">
                         <td th:text="${transfer.receiverUserId.firstName}"></td>
                         <td th:text="${transfer.description}"></td>
-                        <td th:text="${transfer.amount}"></td>
+                        <td th:text="${transfer.amount} + ' €' "></td>
                     </tr>
                     </tbody>
                 </table>
