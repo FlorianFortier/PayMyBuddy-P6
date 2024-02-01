@@ -12,7 +12,7 @@ Database is located to : **jdbc:mariadb://localhost:3306/pay_my_buddy**
 
 ### Please read carefully these instructions :
 
-**1.    I recommand using my data set for testing the application to do so please run the script located at ***"/src/main/resources/testData/initDb.sql"*** then check values in user table for login. Feel free to test registering**
+**1.    I recommand using my data set for testing the application to do so please run the script located at ***"/src/main/resources/testData/add_test_data.sql"*** then check values in user table for login. Feel free to test registering**
 
 **2.   There is a mailer that points to my mailtrap. It is used by registration for sending comfirmations links.
 To bybass controls on the confirmed account please set to <span style="color: #26B260">***TRUE***</span> the enabled field in user table after registering**
