@@ -1,8 +1,4 @@
 @startuml
-
-
-
-
 class com.payMyBuddy.app.model.Bank {
 - Long id
 - String name
@@ -10,6 +6,7 @@ class com.payMyBuddy.app.model.Bank {
 - List<Transaction> emitterBankListOperation
 - List<Transaction> receiverBankListOperation
 - double balance
+- User user
 + String getCode()
 }
 class com.payMyBuddy.app.model.User {
@@ -69,4 +66,8 @@ com.payMyBuddy.app.model.Bank -- com.payMyBuddy.app.model.User
 com.payMyBuddy.app.model.User --* com.payMyBuddy.app.model.Contact
 
 
+com.payMyBuddy.app.util.MoneyHolder <|.. com.payMyBuddy.app.model.Bank
+java.io.Serializable <|.. com.payMyBuddy.app.model.User
+org.springframework.security.core.userdetails.UserDetails <|.. com.payMyBuddy.app.model.User
+java.io.Serializable <|.. com.payMyBuddy.app.model.VerificationToken
 @enduml
