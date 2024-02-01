@@ -25,5 +25,6 @@ To bybass controls on the confirmed account please set to <span style="color: #2
 ![image](https://github.com/FlorianFortier/PayMyBuddy-P6/assets/78166457/02c75f28-841a-4ef3-87ca-f66acbbc7e5a)
 
 
+
 ### Physical Data Model
-![](src\main\resources\util\exported_from_idea.drawio.png)
+![exported_from_idea drawio](https://github.com/FlorianFortier/PayMyBuddy-P6/assets/78166457/7124fcb2-10b0-404d-b2a2-ef7b46bb34ab)
