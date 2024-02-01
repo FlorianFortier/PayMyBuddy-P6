@@ -1,4 +1,4 @@
-`# PayMyBuddy-P6
+# PayMyBuddy-P6
 
 This application strives for more secure payments and better budget control.
 
