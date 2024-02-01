@@ -1,21 +1,21 @@
 <html lang="" xmlns:th="http://www.thymeleaf.org">
-<div class="modal fade" id="addConnectionModal" tabindex="-1" aria-labelledby="addConnectionModalLabel" aria-hidden="true">
+<div class="modal fade" id="addSoldeModal" tabindex="-1" aria-labelledby="addSoldeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addConnectionModalLabel">Add Connection</h5>
+                <h5 class="modal-title" id="addSoldeModalLabel" th:text="#{modal.title.amount}"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="" th:action="" method="post">
+                <form id="addSoldeForm" th:action="@{/transferFromBank}"  method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                     <div class="mb-3">
-                        <label for="contactEmail" class="form-label"></label>
-                        <input type="email" class="form-control" id="contactEmail" name="contactEmail" required>
+                        <label for="amount" class="form-label"></label>
+                        <input type="number" class="form-control" id="amount" name="amount" placeholder="0€" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Add solde</button>
+                    <button type="submit" class="btn btn-primary" th:text="#{modal.title.addAmount}"></button>
                 </form>
             </div>
         </div>

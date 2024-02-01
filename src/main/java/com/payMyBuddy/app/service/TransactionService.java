@@ -8,6 +8,7 @@ import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.repository.BankRepository;
 import com.payMyBuddy.app.repository.TransactionRepository;
 import com.payMyBuddy.app.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -34,74 +35,47 @@ public class TransactionService {
         return transactionRepository.findByEmitterUserId_IdOrReceiverUserId_Id(userId, userId);
     }
 
-    public UserDTO transferMoneyToBank(Authentication authentication, double amount) {
-        // Récupérer l'utilisateur authentifié
-        User currentUser = userRepository.findByEmail(authentication.getName());
 
-        // Récupérer la banque associée à l'utilisateur
-        Bank userBank = currentUser.getBank();
+    public void transferMoneyToUserFromBank(User user, Double amount) {
+        // Récupérer la banque de l'utilisateur
+        Bank userBank = user.getBank();
 
-        // Vérifier si l'utilisateur a suffisamment d'argent pour le transfert
-        if (currentUser.getBalance() >= amount) {
-            // Mettre à jour le solde de l'utilisateur
-            currentUser.setBalance(currentUser.getBalance() - amount);
-            userRepository.save(currentUser);
+        // Vérifier si la banque et l'utilisateur existent
+        if (userBank != null) {
+            // Effectuer la logique de transfert depuis la banque vers le solde de l'utilisateur
+            double userBalance = user.getBalance();
+            double bankBalance = userBank.getBalance();
 
-            // Créer une transaction
-            Transaction transaction = new Transaction();
-            transaction.setEmitterUserId(currentUser);
-            transaction.setAmount(amount);
-            transaction.setEmitterBankId(userBank);
-            transactionRepository.save(transaction);
+            // Vérifier si la banque a suffisamment de fonds
+            if (bankBalance >= amount) {
+                // Déduire le montant de la banque
+                userBank.setBalance(bankBalance - amount);
+                bankRepository.save(userBank);
 
-            // Mettre à jour le solde de la banque
-            userBank.setBalance(userBank.getBalance() + amount);
-            bankRepository.save(userBank);
+                // Ajouter le montant au solde de l'utilisateur
+                user.setBalance(userBalance + amount);
+                userRepository.save(user);
 
-            return new UserDTO();
+                // Enregistrer la transaction si nécessaire
+                Transaction transaction = new Transaction();
+                // Paramètres de la transaction...
+                transactionRepository.save(transaction);
+            } else {
+                throw new InsufficientFundsException("Vous semblez ne pas avoir le solde suffisant vérifier votre moyen de paiement.", bankBalance, amount);
+            }
         } else {
-            // Gérer le cas où l'utilisateur n'a pas assez d'argent
-            logger.error("Transfert échoué : Solde insuffisant.");
-            throw new InsufficientFundsException(currentUser.getBalance(), amount);
+            throw new EntityNotFoundException("La banque ou l'utilisateur n'existe pas");
         }
     }
 
-    public UserDTO transferMoneyFromBank(Authentication authentication, double amount) {
-        User currentUser = userRepository.findByEmail(authentication.getName());
-        Bank userBank = currentUser.getBank();
-
-        // Vérifier si la banque a suffisamment d'argent pour le transfert
-        if (userBank.getBalance() >= amount) {
-            // Créer une transaction
-            Transaction transaction = new Transaction();
-            transaction.setEmitterBankId(userBank);
-            transaction.setAmount(amount);
-            transaction.setReceiverUserId(currentUser);
-            transactionRepository.save(transaction);
-
-            // Mettre à jour le solde de la banque
-            userBank.setBalance(userBank.getBalance() - amount);
-            bankRepository.save(userBank);
-
-            // Mettre à jour le solde de l'utilisateur
-            currentUser.setBalance(currentUser.getBalance() + amount);
-            userRepository.save(currentUser);
-
-            return new UserDTO();
-        } else {
-            logger.error("Transfert échoué : Solde insuffisant dans la banque.");
-            throw new InsufficientFundsException(userBank.getBalance(), amount);
-        }
-    }
-
-    public void transferMoneyToUser(Authentication authentication, double amount, String recipientEmail) {
+    public void transferMoneyToUser(Authentication authentication, Double amount, String recipientEmail) {
         User currentUser = userRepository.findByEmail(authentication.getName());
         User recipientUser = userRepository.findByEmail(recipientEmail);
 
         // Vérifier si l'utilisateur a suffisamment d'argent pour le transfert
         if (currentUser.getBalance() >= amount) {
             // Calculer la commission (0.5%)
-            double fee = calculateFee(amount);
+            Double fee = calculateFee(amount);
 
             // Créer une transaction
             Transaction transaction = new Transaction();
@@ -125,7 +99,7 @@ public class TransactionService {
     }
 
     // Méthode pour calculer la commission (0.5%)
-    private double calculateFee(double amount) {
+    private double calculateFee(Double amount) {
         // 0.5% of the transfer amount
         double feePercentage = 0.005;
         return amount * feePercentage;

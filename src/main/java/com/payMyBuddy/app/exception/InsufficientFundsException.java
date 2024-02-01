@@ -1,5 +1,8 @@
 package com.payMyBuddy.app.exception;
 
+import lombok.Getter;
+
+@Getter
 public class InsufficientFundsException extends RuntimeException {
     private final double balance;
 
@@ -10,12 +13,10 @@ public class InsufficientFundsException extends RuntimeException {
         this.balance = balance;
         this.amount = amount;
     }
-
-    public double getBalance() {
-        return balance;
+    public InsufficientFundsException(String message, double balance, double amount) {
+        super(message);
+        this.balance = balance;
+        this.amount = amount;
     }
 
-    public double getAmount() {
-        return amount;
-    }
 }

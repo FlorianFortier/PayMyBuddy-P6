@@ -38,6 +38,10 @@ public class Bank implements MoneyHolder {
     @Column(name = "balance", nullable = false)
     private double balance;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Override
     public String getCode() {
         return null;

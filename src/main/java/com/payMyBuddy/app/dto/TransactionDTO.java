@@ -1,7 +1,10 @@
 package com.payMyBuddy.app.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+
 
 import java.util.Objects;
 
@@ -10,7 +13,9 @@ import java.util.Objects;
 public class TransactionDTO {
         private String name;
 
-        private double amount;
+        @NotNull(message = "Amount cannot be null")
+        @Positive(message = "Amount must be positive")
+        private Double amount;
 
         private String description;
 

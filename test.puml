@@ -1,0 +1,72 @@
+@startuml
+
+
+
+
+class com.payMyBuddy.app.model.Bank {
+- Long id
+- String name
+- String address
+- List<Transaction> emitterBankListOperation
+- List<Transaction> receiverBankListOperation
+- double balance
++ String getCode()
+}
+class com.payMyBuddy.app.model.User {
+- Long id
+- String firstName
+- String lastName
+- String username
+- String email
+- String password
+- String createdAt
+- boolean enabled
+- List<String> roles
+- VerificationToken verificationToken
+- double balance
+- Bank bank
+- List<Transaction> emitterUserListOperation
+- List<Transaction> receiverUserListOperation
+- List<Contact> userListContact
+- List<Contact> contactListContact
++ Collection<? extends GrantedAuthority> getAuthorities()
++ boolean isAccountNonExpired()
++ boolean isAccountNonLocked()
++ boolean isCredentialsNonExpired()
++ boolean isEnabled()
++ boolean equals(Object)
++ int hashCode()
+}
+class com.payMyBuddy.app.model.VerificationToken {
+- {static} int EXPIRATION
+- Long id
+- String token
+- User user
+- Date expiryDate
+- Date calculateExpiryDate()
++ boolean equals(Object)
++ int hashCode()
+}
+class com.payMyBuddy.app.model.Contact {
+- Long id
+- User user
+- User contact
+}
+class com.payMyBuddy.app.model.Transaction {
+- Long id
+- User emitterUserId
+- User receiverUserId
+- Bank receiverBankId
+- Bank emitterBankId
+- LocalDateTime at
+- String description
+- double amount
+}
+
+com.payMyBuddy.app.model.User --* com.payMyBuddy.app.model.Transaction
+
+com.payMyBuddy.app.model.Bank -- com.payMyBuddy.app.model.User
+com.payMyBuddy.app.model.User --* com.payMyBuddy.app.model.Contact
+
+
+@enduml
