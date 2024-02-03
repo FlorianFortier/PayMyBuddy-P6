@@ -1,112 +1,133 @@
 package com.payMyBuddy.app.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Table(name = "user")
 public class User implements Serializable, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name= "user_id")
     private Long id;
-    @Column(name= "name")
 
-    private String name;
-    @Column(name= "surname")
+    @Column(name= "first_name")
+    private String firstName;
 
-    private String surname;
+    @Column(name= "last_name")
+    private String lastName;
+
+    @Column(name = "username")
+    private String username;
+
     @Column(name= "email")
-
     private String email;
-    @Column(name= "pwd")
 
+    @Column(name= "pwd")
     private String password;
-    @Column(name = "createdAt")
+
+    @Column(name = "created_at")
     private String createdAt;
 
-    public String getName() {
-        return name;
-    }
+    @Column(name = "enabled")
+    private boolean enabled;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private List<String> roles;
 
-    public String getSurname() {
-        return surname;
-    }
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Transient
+    private VerificationToken verificationToken;
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+    @Column(name = "balance", nullable = false)
+    private double balance;
 
-    public String getEmail() {
-        return email;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_id")
+    @ToString.Exclude
+    private Bank bank;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "emitterUserId")
+    @ToString.Exclude
+    @Transient
+    private List<Transaction> emitterUserListOperation;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiverUserId")
+    @ToString.Exclude
+    @Transient
+    private List<Transaction> receiverUserListOperation;
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @ToString.Exclude
+    private List<Contact> userListContact;
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contact")
+    @ToString.Exclude
+    private List<Contact> contactListContact;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (roles == null) {
+            return Collections.emptyList();
+        }
+
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 
-    @Override
-    public String getPassword() {
-        return null;
-    }
 
-    @Override
-    public String getUsername() {
-        return null;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return enabled;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

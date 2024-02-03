@@ -1,0 +1,51 @@
+
+input {
+    padding-bottom: 3rem;
+}
+
+.contour-form {
+    border: grey solid .1rem !important;
+    padding: 1rem;
+    border-radius: 2%;
+}
+
+.nav-custom {
+
+    background-color: #fff;
+    color: #000;
+    width: 3fr;
+}
+.nav-custom:nth-child(*) li {
+    color: black;
+}
+a {
+    text-decoration: none !important;
+}
+
+.breadcrumb {
+    background-color: #e8e8e8 !important;
+    padding: 1rem !important;
+}
+
+#moneyTransferForm {
+    background-color: #e8e8e8;
+    padding: 3rem;
+}
+
+#moneyTransferForm input, #moneyTransferForm select {
+    border: .2rem solid #727272;
+}
+
+table thead tr td {
+    background-color: #459645 !important;
+    color: #fff !important;
+}
+
+td {
+    padding: 2rem !important;
+}
+
+.menu-item-black {
+    color: black;
+}
+

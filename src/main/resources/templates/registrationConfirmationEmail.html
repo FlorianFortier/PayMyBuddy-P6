@@ -1,0 +1,12 @@
+<!-- registrationConfirmationEmail.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirmation de l'enregistrement</title>
+</head>
+<body>
+<p th:text="#{email.registrationConfirmation.text}"> </p>
+<p><a th:href="${confirmationLink}" th:text="#{email.registrationConfirmation.cta}">Cliquez ici pour confirmer votre enregistrement</a></p>
+</body>
+</html>
