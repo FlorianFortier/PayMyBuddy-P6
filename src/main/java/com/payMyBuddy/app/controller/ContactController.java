@@ -5,8 +5,10 @@ import com.payMyBuddy.app.model.Contact;
 import com.payMyBuddy.app.model.User;
 import com.payMyBuddy.app.repository.UserRepository;
 import com.payMyBuddy.app.service.ContactService;
+import com.payMyBuddy.app.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,32 +21,32 @@ import java.util.List;
 public class ContactController {
 
     private final ContactService contactService;
-    private final UserRepository userRepository;
 
+    private final CustomUserDetailsService customUserDetailsService;
+
+    Authentication authentication;
     @GetMapping
     public String showContacts(Model model, Authentication authentication) {
-        User currentUser = getUserFromAuthentication(authentication);
-        List<Contact> contacts = contactService.getContactsByUserId(currentUser.getId());
+        org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User user = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
+        Long currentUserId = user.getId();
+        List<Contact> contacts = contactService.getContactsByUserId(currentUserId);
         model.addAttribute("contacts", contacts);
         return "contacts"; // Assuming you have a contacts.html Thymeleaf template
     }
-
     @PostMapping("/addContact")
     public String addContact(@RequestParam("contactEmail") String contactEmail, Authentication authentication, Model model) {
         try {
-            User currentUser = getUserFromAuthentication(authentication);
-            contactService.addContact(currentUser, contactEmail);
+            org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+            User user = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
+
+            contactService.addContact(user, contactEmail);
             model.addAttribute("successMessage", "Contact added successfully");
         } catch (ContactUserNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
 
-        return "redirect:/transfer.html";
-    }
-
-
-    private User getUserFromAuthentication(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName());
+        return "redirect:/contacts"; // Redirect to the contacts page
     }
 }
 

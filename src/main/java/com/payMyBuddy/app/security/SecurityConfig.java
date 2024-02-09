@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -45,18 +46,21 @@ public class SecurityConfig {
         http.cors(withDefaults())
                 .csrf(withDefaults())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/registration", "/login","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/transfer.html", "/transfer.html").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/registration", "/login","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/transfer.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/transfer.html")
                         .permitAll()
+
                 )
                 .logout(logout ->
                         logout
-                            .logoutSuccessUrl("/login.html?logout=true")
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                            .logoutSuccessUrl("/login.html")
+                            .invalidateHttpSession(true)
+                            .deleteCookies("JSESSIONID")
                             .permitAll()
                 );
         return http.build();

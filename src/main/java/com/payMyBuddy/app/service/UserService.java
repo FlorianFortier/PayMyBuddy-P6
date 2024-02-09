@@ -80,4 +80,6 @@ public class UserService implements IUserService {
     public User getUserByEmail(String username) {
         return userRepository.findByEmail(username);
     }
+
+
 }

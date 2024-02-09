@@ -1,15 +1,15 @@
 package com.payMyBuddy.app.controller;
 
-import org.springframework.security.authentication.AuthenticationManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
 
-    LoginController(AuthenticationManager authenticationManager) {
-    }
+
 
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {

@@ -1,6 +1,5 @@
 package com.payMyBuddy.app.service;
 
-import com.payMyBuddy.app.dto.ContactDTO;
 import com.payMyBuddy.app.exception.ContactUserNotFoundException;
 import com.payMyBuddy.app.model.Contact;
 import com.payMyBuddy.app.model.User;
@@ -9,6 +8,7 @@ import com.payMyBuddy.app.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

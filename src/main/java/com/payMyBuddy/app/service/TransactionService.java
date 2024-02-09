@@ -1,6 +1,5 @@
 package com.payMyBuddy.app.service;
 
-import com.payMyBuddy.app.dto.UserDTO;
 import com.payMyBuddy.app.exception.InsufficientFundsException;
 import com.payMyBuddy.app.model.Bank;
 import com.payMyBuddy.app.model.Transaction;
@@ -13,11 +12,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Service
+@Transactional
 public class TransactionService {
 
     private final Logger logger = LogManager.getLogger(TransactionService.class);
