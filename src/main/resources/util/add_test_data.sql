@@ -26,12 +26,12 @@ INSERT INTO user_role (user_id, role)
 VALUES (1, 'USER')
 ON DUPLICATE KEY UPDATE user_id = user_id;
 
-INSERT INTO contact (contact_id, id, user_id)
-VALUES (1, 1, 2)
+INSERT INTO contact (contact_id, user_id)
+VALUES (1, 2)
 ON DUPLICATE KEY UPDATE contact_id = contact_id;
 
-INSERT INTO contact (contact_id, id, user_id)
-VALUES (2, 2, 1)
+INSERT INTO contact (contact_id, user_id)
+VALUES (2, 1)
 ON DUPLICATE KEY UPDATE contact_id = contact_id;
 
 INSERT INTO transaction (amount, created_at, emitter_bank_id, emitter_user_id, id, receiver_bank_id, receiver_user_id, description)

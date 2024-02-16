@@ -80,9 +80,6 @@ public class TransactionController {
             redirectAttributes.addFlashAttribute("errorMessage", bundle.getString("transfer.toUser.error"));
 
         }
-
-
-
         return "redirect:/transfer.html";
     }
 
