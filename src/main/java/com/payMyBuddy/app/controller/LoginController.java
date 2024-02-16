@@ -13,8 +13,10 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {
-        if (error != null) {
+        if (error != null && error.contains("email")) {
             model.addAttribute("emailNotConfirmed", true);
+        } else if (error !=null){
+            model.addAttribute("userDoesNotExist", true);
         }
 
         if (logout != null) {

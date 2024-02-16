@@ -34,7 +34,6 @@ public class TransactionController {
     }
 
     /**
-     *
      * @return view "index"
      */
     @GetMapping("/transfer.html")
@@ -42,6 +41,10 @@ public class TransactionController {
 
         // Récupération de l'utilisateur connecté
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() instanceof String) {
+            // Rediriger vers la page de connexion
+            return "redirect:/login";
+        }
         org.springframework.security.core.userdetails.User loggedInUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User customUser = userService.getUserByEmail(loggedInUser.getUsername());
         List<Contact> contacts = contactService.getContactsByUserId(customUser.getId());

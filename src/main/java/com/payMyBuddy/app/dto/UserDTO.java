@@ -5,15 +5,17 @@ import com.payMyBuddy.app.security.annotation.ValidEmail;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 
 @PasswordMatches
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class UserDTO {
 
-   @NotEmpty
+    @NotEmpty
    private String firstName;
     @NotNull
     @NotEmpty

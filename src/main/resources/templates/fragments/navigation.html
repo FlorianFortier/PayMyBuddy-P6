@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+    <nav class="d-flex flex-row justify-content-between">
+        <span class="btn btn-success w-25 my-1 h mb-5 text-center align-items-center" id="navbar-paymybuddy">Pay My Buddy</span>
+        <div class="hiding py-2"></div>
+        <ul class="d-flex justify-content-around align-items-center nav-custom me-5 py-2">
+            <li><a href="#" class="mx-2 menu-item-black " th:text="#{menu.home}"></a></li>
+            <li><a href="#" class="mx-2 menu-item-black" th:text="#{menu.profil}"></a></li>
+            <li><a href="transfer.html" class="mx-2"  th:text="#{menu.transfer}"></a></li>
+            <li><a href="#" class="mx-2 menu-item-black" th:text="#{menu.contact}"></a></li>
+            <li><a href="bank" class="mx-2 menu-item-black" th:text="#{menu.bank}"></a></li>
+
+            <li><a class="mx-2 menu-item-black" th:text="#{menu.logoff}" th:href="@{logout}"></a></li>
+        </ul>
+    </nav>
+</html>

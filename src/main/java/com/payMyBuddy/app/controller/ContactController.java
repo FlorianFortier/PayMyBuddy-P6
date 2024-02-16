@@ -2,16 +2,16 @@ package com.payMyBuddy.app.controller;
 
 import com.payMyBuddy.app.exception.ContactUserNotFoundException;
 import com.payMyBuddy.app.model.Contact;
-import com.payMyBuddy.app.model.User;
-import com.payMyBuddy.app.repository.UserRepository;
 import com.payMyBuddy.app.service.ContactService;
 import com.payMyBuddy.app.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -24,29 +24,29 @@ public class ContactController {
 
     private final CustomUserDetailsService customUserDetailsService;
 
-    Authentication authentication;
+
     @GetMapping
     public String showContacts(Model model, Authentication authentication) {
         org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User user = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
-        Long currentUserId = user.getId();
-        List<Contact> contacts = contactService.getContactsByUserId(currentUserId);
+        Long userId = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
+
+        List<Contact> contacts = contactService.getContactsByUserId(userId);
         model.addAttribute("contacts", contacts);
-        return "contacts"; // Assuming you have a contacts.html Thymeleaf template
+        return "contacts";
     }
     @PostMapping("/addContact")
     public String addContact(@RequestParam("contactEmail") String contactEmail, Authentication authentication, Model model) {
         try {
             org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User user = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
+            Long userId = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
 
-            contactService.addContact(user, contactEmail);
+            contactService.addContact(userId, contactEmail);
             model.addAttribute("successMessage", "Contact added successfully");
         } catch (ContactUserNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
 
-        return "redirect:/contacts"; // Redirect to the contacts page
+        return "redirect:/contacts";
     }
 }
 

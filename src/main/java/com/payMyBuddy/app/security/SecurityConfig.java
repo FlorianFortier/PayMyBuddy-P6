@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -22,6 +23,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    public static final String LOGIN = "/login";
     @Autowired
     private final CustomUserDetailsService myUserDetailsService;
 
@@ -45,24 +47,29 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(withDefaults())
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/registration", "/login","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/transfer.html").permitAll()
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/registration", "/login/**","/registrationConfirm", "/static", "/css/**", "/js/**", "/images/**", "/fonts/**", "/error/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/login")
+                        .loginPage(LOGIN)
                         .defaultSuccessUrl("/transfer.html")
                         .permitAll()
-
+                        .failureUrl("/login?error=true")
                 )
                 .logout(logout ->
                         logout
                             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                            .logoutSuccessUrl("/login.html")
+                            .logoutSuccessUrl(LOGIN)
                             .invalidateHttpSession(true)
                             .deleteCookies("JSESSIONID")
                             .permitAll()
+                )
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN)) // Redirection en cas d'accès non autorisé
                 );
+
         return http.build();
     }
 

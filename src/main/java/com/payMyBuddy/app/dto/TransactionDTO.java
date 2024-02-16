@@ -3,6 +3,7 @@ package com.payMyBuddy.app.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 
@@ -10,6 +11,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class TransactionDTO {
         private String name;
 
@@ -21,11 +23,6 @@ public class TransactionDTO {
 
         private String email;
 
-        public TransactionDTO(String moneyHolderName, double amount, String description) {
-            this.name = moneyHolderName;
-            this.amount = amount;
-            this.description = description;
-        }
 
         @Override
         public boolean equals(Object o) {

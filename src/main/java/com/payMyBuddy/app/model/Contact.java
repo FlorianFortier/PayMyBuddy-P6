@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 
 @Entity
 @Getter
 @Setter
 @Table(name = "contact")
 @RequiredArgsConstructor
-
 public class Contact {
 
     @Id
@@ -31,4 +32,5 @@ public class Contact {
         this.user = user;
         this.contact = contact;
     }
+
 }
