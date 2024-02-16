@@ -60,7 +60,7 @@ public class BankController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             User user = new User();
-            user.setId(customUserDetailsService.getUserIdByUsername(userDetails.getUsername()));
+            user.setId(customUserDetailsService.getUserIdByEmail(userDetails.getUsername()));
             bank.setUser(user);
         } else {
             String loginUrl = "/login";

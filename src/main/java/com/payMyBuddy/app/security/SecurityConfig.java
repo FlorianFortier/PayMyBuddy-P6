@@ -64,10 +64,6 @@ public class SecurityConfig {
                             .invalidateHttpSession(true)
                             .deleteCookies("JSESSIONID")
                             .permitAll()
-                )
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling
-                                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN)) // Redirection en cas d'accès non autorisé
                 );
 
         return http.build();

@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 @Controller
 @RequestMapping("/contacts")
@@ -28,25 +30,27 @@ public class ContactController {
     @GetMapping
     public String showContacts(Model model, Authentication authentication) {
         org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        Long userId = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
+        Long userId = customUserDetailsService.getUserIdByEmail(currentUser.getUsername());
 
         List<Contact> contacts = contactService.getContactsByUserId(userId);
         model.addAttribute("contacts", contacts);
         return "contacts";
     }
     @PostMapping("/addContact")
-    public String addContact(@RequestParam("contactEmail") String contactEmail, Authentication authentication, Model model) {
+    public String addContact(@RequestParam("contactEmail") String contactEmail, Authentication authentication,  RedirectAttributes redirectAttributes) {
         try {
             org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            Long userId = customUserDetailsService.getUserIdByUsername(currentUser.getUsername());
+            Long userId = customUserDetailsService.getUserIdByEmail(currentUser.getUsername());
 
             contactService.addContact(userId, contactEmail);
-            model.addAttribute("successMessage", "Contact added successfully");
+            ResourceBundle bundle = ResourceBundle.getBundle("messages");
+
+            redirectAttributes.addFlashAttribute("successMessage", bundle.getString("contact.success.userAddedSuccessfully"));
         } catch (ContactUserNotFoundException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
-        return "redirect:/contacts";
+        return "redirect:/transfer.html";
     }
 }
 

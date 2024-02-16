@@ -40,8 +40,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 getAuthorities(user.getRoles())
         );
     }
-    public Long getUserIdByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+    public Long getUserIdByEmail(String username) {
+        User user = userRepository.findByEmail(username);
         if (user != null) {
             return user.getId(); // Assuming getId() returns long type
         }

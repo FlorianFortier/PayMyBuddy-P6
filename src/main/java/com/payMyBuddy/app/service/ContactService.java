@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 @Service
 @Slf4j
@@ -36,7 +37,7 @@ public class ContactService {
         if (userRepository.findById(userId).isPresent()) {
             user = userRepository.findById(userId).get();
         } else {
-            log.error("user is not connecter" + email);
+            log.error("user is not connected" + email);
             throw new UserIsNotConnectedException("User is not connected or disconnected");
         }
         
@@ -44,9 +45,9 @@ public class ContactService {
             Contact newContact = new Contact(user, contactUser);
             contactRepository.save(newContact);
         } else {
-            // Handle the case where the contact user is not found
+            ResourceBundle bundle = ResourceBundle.getBundle("messages");
             log.error("Contact user not found for email: " + email);
-            throw new ContactUserNotFoundException("Contact user not found for email: " + email);
+            throw new ContactUserNotFoundException(bundle.getString("contact.error.userNotFound") + " " + email);
         }
     }
 
