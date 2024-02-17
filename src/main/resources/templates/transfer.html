@@ -14,17 +14,8 @@
 </head>
 <body>
 <header>
-    <nav class="d-flex flex-row justify-content-between">
-        <span class="btn btn-success w-25 my-1 h mb-5 text-center align-items-center" id="navbar-paymybuddy">Pay My Buddy</span>
-        <div class="hiding py-2"></div>
-        <ul class="d-flex justify-content-around align-items-center nav-custom me-5 py-2">
-            <li><a href="" class="mx-2 menu-item-black " th:text="#{menu.home}"></a></li>
-            <li><a href="" class="mx-2 menu-item-black" th:text="#{menu.profil}"></a></li>
-            <li><a href="" class="mx-2"  th:text="#{menu.transfer}"></a></li>
-            <li><a href="" class="mx-2 menu-item-black" th:text="#{menu.contact}"></a></li>
-            <li><a class="mx-2 menu-item-black" th:text="#{menu.logoff}" th:href="@{logout}"></a></li>
-        </ul>
-    </nav>
+    <div th:include="fragments/navigation"></div>
+
     <section>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -54,18 +45,21 @@
                         th:text="#{button.text.addSolde}"></button>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#addConnectionModal" th:text="#{button.text.addConnection}"></button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#transferToBank" th:text="#{transfer.toBank}"></button>
             </div>
         </div>
 
         <div th:include="fragments/addSoldeModal"></div>
         <div th:include="fragments/addConnectionModal"></div>
+        <div th:include="fragments/transferToBank"></div>
 
         <div class="">
             <form id="moneyTransferForm" action="/transfer" method="post"
                   class="col-6 align-items-center d-flex w-100 justify-content-between mb-3">
                 <label>
                     <select name="email" id="contacts-select" class="form-select">
-                        <option selected value="">----</option>
+                        <option selected>----</option>
                         <option th:each="contact : ${contacts}" th:text="${contact.contact.firstName}"
                                 th:value="${contact.contact.email}"></option>
                     </select>

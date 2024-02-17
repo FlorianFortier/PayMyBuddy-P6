@@ -14,13 +14,17 @@
 <div th:if="${registrationSuccess}" class="alert alert-success">
     <p th:text="#{success.register.message}"></p>
 </div>
-<!--/*@thymesVar id="emailNotConfirmed" type=""*/-->
 <div th:if="${emailNotConfirmed}" class="alert alert-danger">
-    <p th:text="#{login.email.notConfirmed}"></p>
+    <p th:text="#{auth.message.disabled}"></p>
+</div>
+<div th:if="${userDoesNotExist}" class="alert alert-danger">
+    <p th:text="#{auth.message.doesnt.exist}"></p>
 </div>
 <div th:if="${message}">
     <p th:text="${message}"></p>
 </div>
+
+
 
 <form th:action="@{login}" method="post" class="container-sm d-flex flex-column w-100 align-items-center h-100 justify-content-center">
     <div class="contour-form d-flex flex-column align-items-center">

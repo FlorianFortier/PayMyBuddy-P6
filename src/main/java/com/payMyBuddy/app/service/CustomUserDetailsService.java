@@ -40,7 +40,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 getAuthorities(user.getRoles())
         );
     }
-
+    public Long getUserIdByEmail(String username) {
+        User user = userRepository.findByEmail(username);
+        if (user != null) {
+            return user.getId(); // Assuming getId() returns long type
+        }
+        throw new UsernameNotFoundException("User not found with username: " + username);
+    }
 
     private static List<GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.payMyBuddy.app.model.User;
 
 import com.payMyBuddy.app.service.UserService;
 import com.payMyBuddy.app.util.EmailServiceImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
@@ -20,7 +21,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private final MessageSource messages;
     private final EmailServiceImpl emailService;
 
-    public RegistrationListener(UserService userService,MessageSource messages,EmailServiceImpl emailService) {
+    public RegistrationListener(UserService userService, @Qualifier("messageSource") MessageSource messages, EmailServiceImpl emailService) {
         this.userService = userService;
         this.messages = messages;
         this.emailService = emailService;
