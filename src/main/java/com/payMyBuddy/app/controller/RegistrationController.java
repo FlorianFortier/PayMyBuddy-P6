@@ -10,6 +10,7 @@ import com.payMyBuddy.app.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ public class RegistrationController {
     private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public RegistrationController(UserService userService, MessageSource messages, ApplicationEventPublisher eventPublisher) {
+    public RegistrationController(UserService userService, @Qualifier("messageSource") MessageSource messages, ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
         this.messages = messages;
         this.eventPublisher = eventPublisher;

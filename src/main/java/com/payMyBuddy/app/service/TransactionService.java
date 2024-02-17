@@ -1,6 +1,7 @@
 package com.payMyBuddy.app.service;
 
 import com.payMyBuddy.app.exception.InsufficientFundsException;
+import com.payMyBuddy.app.exception.RecipientUserDoesNotExist;
 import com.payMyBuddy.app.model.Bank;
 import com.payMyBuddy.app.model.Transaction;
 import com.payMyBuddy.app.model.User;
@@ -98,32 +99,39 @@ public class TransactionService {
     }
     public void transferMoneyToUser(Authentication authentication, Double amount, String recipientEmail) {
         User currentUser = userRepository.findByEmail(authentication.getName());
-        User recipientUser = userRepository.findByEmail(recipientEmail);
+        try {
+            User recipientUser = userRepository.findByEmail(recipientEmail);
+            if (recipientUser == null) {
+                throw new RecipientUserDoesNotExist("L'utilisateur receveur n'existe pas.");
+            }
+            // Vérifier si l'utilisateur a suffisamment d'argent pour le transfert
+            if (currentUser.getBalance() >= amount) {
+                // Calculer la commission (0.5%)
+                Double fee = calculateFee(amount);
 
-        // Vérifier si l'utilisateur a suffisamment d'argent pour le transfert
-        if (currentUser.getBalance() >= amount) {
-            // Calculer la commission (0.5%)
-            Double fee = calculateFee(amount);
+                // Créer une transaction
+                Transaction transaction = new Transaction();
+                transaction.setEmitterUserId(currentUser);
+                transaction.setAmount(amount - fee); // Deduct the fee from the transfer amount
+                transaction.setReceiverUserId(recipientUser);
+                transactionRepository.save(transaction);
 
-            // Créer une transaction
-            Transaction transaction = new Transaction();
-            transaction.setEmitterUserId(currentUser);
-            transaction.setAmount(amount - fee); // Deduct the fee from the transfer amount
-            transaction.setReceiverUserId(recipientUser);
-            transactionRepository.save(transaction);
+                // Mettre à jour le solde de l'émetteur (déduire le montant total avec la commission)
+                currentUser.setBalance(currentUser.getBalance() - (amount - fee));
+                userRepository.save(currentUser);
 
-            // Mettre à jour le solde de l'émetteur (déduire le montant total avec la commission)
-            currentUser.setBalance(currentUser.getBalance() - (amount - fee));
-            userRepository.save(currentUser);
+                // Mettre à jour le solde du destinataire
+                recipientUser.setBalance(recipientUser.getBalance() + (amount - fee));
+                userRepository.save(recipientUser);
 
-            // Mettre à jour le solde du destinataire
-            recipientUser.setBalance(recipientUser.getBalance() + (amount - fee));
-            userRepository.save(recipientUser);
-
-        } else {
-            logger.error("Transfert échoué : Solde insuffisant.");
-            throw new InsufficientFundsException(currentUser.getBalance(), amount);
+            } else {
+                logger.error("Transfert échoué : Solde insuffisant.");
+                throw new InsufficientFundsException(currentUser.getBalance(), amount);
+            }
+        } catch (RecipientUserDoesNotExist e) {
+            throw e; // Re-throw the custom exception
         }
+
     }
 
     // Méthode pour calculer la commission (0.5%)

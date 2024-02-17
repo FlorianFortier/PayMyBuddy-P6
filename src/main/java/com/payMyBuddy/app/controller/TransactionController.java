@@ -2,6 +2,7 @@ package com.payMyBuddy.app.controller;
 
 import com.payMyBuddy.app.dto.TransactionDTO;
 import com.payMyBuddy.app.exception.InsufficientFundsException;
+import com.payMyBuddy.app.exception.RecipientUserDoesNotExist;
 import com.payMyBuddy.app.model.Contact;
 import com.payMyBuddy.app.model.Transaction;
 import com.payMyBuddy.app.model.User;
@@ -12,7 +13,6 @@ import com.payMyBuddy.app.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +25,11 @@ import java.util.ResourceBundle;
 @Controller
 @RequiredArgsConstructor
 public class TransactionController {
+
+    public static final String REDIRECT_TRANSFER_HTML = "redirect:/transfer.html";
+    public static final String SUCCESS_MESSAGE = "successMessage";
+    public static final String ERROR_MESSAGE = "errorMessage";
+    public static final String MESSAGES = "messages";
 
     private final TransactionService transactionService;
     private final ContactService contactService;
@@ -41,7 +46,7 @@ public class TransactionController {
      * @return view "index"
      */
     @GetMapping("/transfer.html")
-    public String transfer(Model model, RedirectAttributes redirectAttribute, HttpServletRequest request, Authentication authentication) {
+    public String transfer(Model model, Authentication authentication) {
 
         // Récupération de l'utilisateur connecté
         if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() instanceof String) {
@@ -69,25 +74,29 @@ public class TransactionController {
     public String transferMoney(@ModelAttribute("transactionDTO") TransactionDTO transactionDTO,
                                 Authentication authentication,
                                 @RequestParam String email, RedirectAttributes redirectAttributes) {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages");
+        ResourceBundle bundle = ResourceBundle.getBundle(MESSAGES);
 
         try {
             transactionService.transferMoneyToUser(authentication, transactionDTO.getAmount(), email);
 
             // Redirect to transfer.html after the transfer is completed
-            redirectAttributes.addFlashAttribute("successMessage", bundle.getString("transfer.toUser.success"));
+            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, bundle.getString("transfer.toUser.success"));
         } catch (InsufficientFundsException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", bundle.getString("transfer.toUser.error"));
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toUser.error"));
 
+        }catch (RecipientUserDoesNotExist e) {
+            // Gérer le cas où le destinataire du transfert n'existe pas
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toAccount.error.recipient.not.exist"));
         }
-        return "redirect:/transfer.html";
+
+        return REDIRECT_TRANSFER_HTML;
     }
 
     @PostMapping("/transferFromBank")
     public String transferFromBank(@ModelAttribute("transactionDTO") TransactionDTO transactionDTO,
                                    Authentication authentication,
                                    RedirectAttributes redirectAttributes) {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages");
+        ResourceBundle bundle = ResourceBundle.getBundle(MESSAGES);
 
         try {
             // Récupérer l'utilisateur connecté
@@ -98,21 +107,20 @@ public class TransactionController {
             transactionService.transferMoneyToUserFromBank(customUser, transactionDTO.getAmount());
 
             // Ajouter un message pour afficher le succès du transfert depuis la banque
-            redirectAttributes.addFlashAttribute("successMessage", bundle.getString("transfer.toAccount.success"));
+            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, bundle.getString("transfer.toAccount.success"));
         } catch (InsufficientFundsException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", bundle.getString("transfer.toAccount.error.not.enough.funds"));
-
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toAccount.error.not.enough.funds"));
         }
 
-
         // Rediriger vers la page de transfert
-        return "redirect:/transfer.html";
+        return REDIRECT_TRANSFER_HTML;
     }
+
     @PostMapping("/transferToBank")
     public String transferToBank(@ModelAttribute("transactionDTO") TransactionDTO transactionDTO,
                                  Authentication authentication,
                                  RedirectAttributes redirectAttributes) {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages");
+        ResourceBundle bundle = ResourceBundle.getBundle(MESSAGES);
 
         try {
             // Récupérer l'utilisateur connecté
@@ -123,13 +131,13 @@ public class TransactionController {
             transactionService.transferMoneyFromAccountToBank(customUser, transactionDTO.getAmount());
 
             // Ajouter un message pour afficher le succès du transfert vers la banque
-            redirectAttributes.addFlashAttribute("successMessage", bundle.getString("transfer.toBank.success"));
+            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, bundle.getString("transfer.toBank.success"));
         } catch (InsufficientFundsException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", bundle.getString("transfer.toBank.error"));
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toBank.error"));
         }
 
         // Rediriger vers la page de transfert
-        return "redirect:/transfer.html";
+        return REDIRECT_TRANSFER_HTML;
     }
 }
 
