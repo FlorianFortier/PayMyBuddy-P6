@@ -45,11 +45,14 @@
                         th:text="#{button.text.addSolde}"></button>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#addConnectionModal" th:text="#{button.text.addConnection}"></button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#transferToBank" th:text="#{transfer.toBank}"></button>
             </div>
         </div>
 
         <div th:include="fragments/addSoldeModal"></div>
         <div th:include="fragments/addConnectionModal"></div>
+        <div th:include="fragments/transferToBank"></div>
 
         <div class="">
             <form id="moneyTransferForm" action="/transfer" method="post"

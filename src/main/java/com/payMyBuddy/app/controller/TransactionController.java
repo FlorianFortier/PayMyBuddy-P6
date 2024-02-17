@@ -108,5 +108,28 @@ public class TransactionController {
         // Rediriger vers la page de transfert
         return "redirect:/transfer.html";
     }
+    @PostMapping("/transferToBank")
+    public String transferToBank(@ModelAttribute("transactionDTO") TransactionDTO transactionDTO,
+                                 Authentication authentication,
+                                 RedirectAttributes redirectAttributes) {
+        ResourceBundle bundle = ResourceBundle.getBundle("messages");
+
+        try {
+            // Récupérer l'utilisateur connecté
+            org.springframework.security.core.userdetails.User loggedInUser = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+            User customUser = userService.getUserByEmail(loggedInUser.getUsername());
+
+            // Effectuer le transfert depuis le solde de l'utilisateur vers sa banque
+            transactionService.transferMoneyFromAccountToBank(customUser, transactionDTO.getAmount());
+
+            // Ajouter un message pour afficher le succès du transfert vers la banque
+            redirectAttributes.addFlashAttribute("successMessage", bundle.getString("transfer.toBank.success"));
+        } catch (InsufficientFundsException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", bundle.getString("transfer.toBank.error"));
+        }
+
+        // Rediriger vers la page de transfert
+        return "redirect:/transfer.html";
+    }
 }
 

@@ -12,22 +12,34 @@
 <div th:include="fragments/navigation"></div>
 
 <!-- Display success message if present -->
+<!--/*@thymesVar id="successMessage" type=""*/-->
 <div th:if="${successMessage}" class="alert alert-success" role="alert">
     <p th:text="${successMessage}"></p>
 </div>
 
 <!-- Display error message if present -->
+<!--/*@thymesVar id="errorMessage" type=""*/-->
 <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
     <p th:text="${errorMessage}"></p>
 </div>
 
 <div class="container">
-    <div class="row justify-content-center align-items-center">
+    <div class="row">
+        <div class="col-12">
+            <span class="d-flex justify-content-center align-items-center text-center mb-3" th:if="${bankPresent}">
+                <!--/*@thymesVar id="name" type=""*/-->
+                <p th:text="${bank.name}" class="w-25"></p>
+                <button class="btn btn-success mt-3 p-2 w-25" th:text="${bank.balance} + '€' "></button>
+            </span>
+        </div>
+    </div>
+
+    <div class="row justify-content-center align-items-center" th:if="${not bankPresent}">
         <form action="/create-bank" method="post" class="col-6 d-flex w-50 flex-column justify-content-between mb-3">
             <label for="name" th:text="#{bank.name}"></label><br>
-            <input type="text" id="name" class="form-control" name="name"><br>
+            <input type="text" id="name" class="form-control" name="name" required><br>
             <label for="address" th:text="#{bank.address}"></label><br>
-            <input type="text" id="address" class="form-control" name="address"><br><br>
+            <input type="text" id="address" class="form-control" name="address" required><br><br>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
             <button type="submit" class="btn btn-primary mt-3 w-25" th:text="#{bank.submit}" value="Submit"></button>

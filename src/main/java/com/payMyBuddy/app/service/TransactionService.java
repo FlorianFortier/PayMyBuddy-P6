@@ -68,7 +68,34 @@ public class TransactionService {
             throw new EntityNotFoundException("La banque ou l'utilisateur n'existe pas");
         }
     }
+    public void transferMoneyFromAccountToBank(User user, Double amount) {
+        // Vérifier si l'utilisateur et la banque existent
+        if (user != null && user.getBank() != null) {
+            Bank userBank = user.getBank();
+            double userBalance = user.getBalance();
+            double bankBalance = userBank.getBalance();
 
+            // Vérifier si l'utilisateur a suffisamment de fonds
+            if (userBalance >= amount) {
+                // Déduire le montant du solde de l'utilisateur
+                user.setBalance(userBalance - amount);
+                userRepository.save(user);
+
+                // Ajouter le montant au solde de la banque
+                userBank.setBalance(bankBalance + amount);
+                bankRepository.save(userBank);
+
+                // Enregistrer la transaction si nécessaire
+                Transaction transaction = new Transaction();
+                // Paramètres de la transaction...
+                transactionRepository.save(transaction);
+            } else {
+                throw new InsufficientFundsException("Vous n'avez pas un solde suffisant pour cette transaction.", userBalance, amount);
+            }
+        } else {
+            throw new EntityNotFoundException("L'utilisateur ou la banque n'existe pas.");
+        }
+    }
     public void transferMoneyToUser(Authentication authentication, Double amount, String recipientEmail) {
         User currentUser = userRepository.findByEmail(authentication.getName());
         User recipientUser = userRepository.findByEmail(recipientEmail);
