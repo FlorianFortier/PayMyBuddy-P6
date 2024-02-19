@@ -17,14 +17,10 @@ Database is located to : **jdbc:mariadb://localhost:3306/pay_my_buddy**
 **2.   There is a mailer that points to my mailtrap. It is used by registration for sending comfirmations links.
 To bybass controls on the confirmed account please set to <span style="color: #26B260">***TRUE***</span> the enabled field in user table after registering**
 
-**3. At the moment you cannot link within the App the bank and your payMyBuddy account to do so please update your user in DB bank_id with the desired bank and in the bank table 'user_id' with your user**
-
 
 ## Documentation
 ### UML Diagram
-![image](https://github.com/FlorianFortier/PayMyBuddy-P6/assets/78166457/02c75f28-841a-4ef3-87ca-f66acbbc7e5a)
-
-
+![diagram-4246493688623003328](https://github.com/FlorianFortier/PayMyBuddy-P6/assets/78166457/47c69ca2-94be-4f4b-a327-f5e855817caf)
 
 ### Physical Data Model
-![exported_from_idea drawio](https://github.com/FlorianFortier/PayMyBuddy-P6/assets/78166457/7124fcb2-10b0-404d-b2a2-ef7b46bb34ab)
+![pmb_diagram_mpd](https://github.com/FlorianFortier/PayMyBuddy-P6/assets/78166457/6bd4a9a0-03aa-4e1e-b2e0-146ebde347c4)
