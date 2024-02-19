@@ -16,20 +16,16 @@ import java.io.File;
 
 
 @Component
-@RequiredArgsConstructor
 public class EmailServiceImpl implements IEmailService {
 
     private static final String NO_REPLY_EMAIL = "noreply@payMyBuddy.com";
 
-    private JavaMailSender emailSender;
-    private TemplateEngine templateEngine;
+    private final JavaMailSender emailSender;
+    private final TemplateEngine templateEngine;
 
-    private Logger logger;
-
-    public EmailServiceImpl(JavaMailSender emailSender, TemplateEngine templateEngine, Logger logger) {
+    public EmailServiceImpl(JavaMailSender emailSender, TemplateEngine templateEngine) {
         this.emailSender = emailSender;
         this.templateEngine = templateEngine;
-        this.logger = logger;
     }
 
     @Override
@@ -78,9 +74,7 @@ public class EmailServiceImpl implements IEmailService {
 
             emailSender.send(message);
 
-            logger.atInfo().log("Email sent successfully.");
         } catch (MessagingException e) {
-            logger.atError().log("Error sending email: " + e.getMessage());
             throw e;
         }
     }
