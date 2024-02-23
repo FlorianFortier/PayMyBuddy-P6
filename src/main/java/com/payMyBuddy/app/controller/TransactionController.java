@@ -10,6 +10,7 @@ import com.payMyBuddy.app.service.ContactService;
 import com.payMyBuddy.app.service.CustomUserDetailsService;
 import com.payMyBuddy.app.service.TransactionService;
 import com.payMyBuddy.app.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -83,10 +84,11 @@ public class TransactionController {
             redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, bundle.getString("transfer.toUser.success"));
         } catch (InsufficientFundsException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toUser.error"));
-
-        }catch (RecipientUserDoesNotExist e) {
+            return REDIRECT_TRANSFER_HTML;
+        }catch (RecipientUserDoesNotExist | EntityNotFoundException e) {
             // Gérer le cas où le destinataire du transfert n'existe pas
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toAccount.error.recipient.not.exist"));
+            return REDIRECT_TRANSFER_HTML;
         }
 
         return REDIRECT_TRANSFER_HTML;
@@ -108,8 +110,10 @@ public class TransactionController {
 
             // Ajouter un message pour afficher le succès du transfert depuis la banque
             redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, bundle.getString("transfer.toAccount.success"));
-        } catch (InsufficientFundsException e) {
+
+        } catch (InsufficientFundsException | EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toAccount.error.not.enough.funds"));
+            return  REDIRECT_TRANSFER_HTML;
         }
 
         // Rediriger vers la page de transfert
@@ -132,7 +136,7 @@ public class TransactionController {
 
             // Ajouter un message pour afficher le succès du transfert vers la banque
             redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, bundle.getString("transfer.toBank.success"));
-        } catch (InsufficientFundsException e) {
+        } catch (InsufficientFundsException | EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, bundle.getString("transfer.toBank.error"));
         }
 
